@@ -128,6 +128,9 @@ public abstract class AutoOp2023 extends LinearOpMode {
 
     /** Encoder-Based Movement **/
     public void move(double y_tiles, double x_tiles, String name){
+        // negate y_tiles to account for motors being in reverse mode
+        y_tiles = -y_tiles;
+
         resetWheels();
         leftfront.setTargetPosition((int) ((y_tiles+x_tiles)*ticksPerTile));
         leftback.setTargetPosition((int) ((y_tiles-x_tiles)*ticksPerTile));
@@ -154,8 +157,7 @@ public abstract class AutoOp2023 extends LinearOpMode {
     }
 
     public void move(double y_tiles, double x_tiles){
-        // negate y_tiles to account for motors being in reverse mode
-        move(-y_tiles, x_tiles, "Moving");
+        move(y_tiles, x_tiles, "Moving");
     }
 
     public void strafeRight_enc(double tiles){
