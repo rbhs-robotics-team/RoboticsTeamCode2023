@@ -49,8 +49,7 @@ public class SSPark1 extends AutoOp2023 {
         backward(1.2, 0.2);
         if(position.equals(SleeveDetection.ParkingPosition.LEFT)) {
             strafeLeft(1.3, 0.2);
-        }
-        else if(position.equals(SleeveDetection.ParkingPosition.RIGHT)) {
+        } else if(position.equals(SleeveDetection.ParkingPosition.RIGHT)) {
             strafeRight(1.3, 0.2);
         }
     }
