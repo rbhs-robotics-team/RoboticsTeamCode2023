@@ -51,10 +51,10 @@ public abstract class AutoOp2023 extends LinearOpMode {
         rightback = hardwareMap.get(DcMotor.class, "backRight");
         lift = hardwareMap.get(DcMotor.class, "lift");
         claw = hardwareMap.get(DcMotor.class, "claw");
-        leftfront.setDirection(DcMotor.Direction.FORWARD);
-        leftback.setDirection(DcMotor.Direction.FORWARD);
-        rightfront.setDirection(DcMotor.Direction.REVERSE);
-        rightback.setDirection(DcMotor.Direction.REVERSE);
+        leftfront.setDirection(DcMotor.Direction.REVERSE);
+        leftback.setDirection(DcMotor.Direction.REVERSE);
+        rightfront.setDirection(DcMotor.Direction.FORWARD);
+        rightback.setDirection(DcMotor.Direction.FORWARD);
         lift.setDirection(DcMotor.Direction.FORWARD);
         claw.setDirection(DcMotor.Direction.FORWARD);
         telemetry_ = telemetry;
