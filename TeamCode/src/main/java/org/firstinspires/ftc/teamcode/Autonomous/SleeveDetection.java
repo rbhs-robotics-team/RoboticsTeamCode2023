@@ -9,7 +9,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-// hello world
+// why does this not work?
 
 public class SleeveDetection extends OpenCvPipeline {
     /*
