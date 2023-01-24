@@ -41,7 +41,7 @@ public class SSPark1 extends AutoOp2023 {
             telemetry.addData("ROTATION: ", sleeveDetection.getPosition());
             telemetry.update();
         }
-
+        
         waitForStart();
         SleeveDetection.ParkingPosition position = sleeveDetection.getPosition();
         telemetry.addData("Position", position);
