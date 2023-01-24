@@ -154,7 +154,8 @@ public abstract class AutoOp2023 extends LinearOpMode {
     }
 
     public void move(double y_tiles, double x_tiles){
-        move(y_tiles, x_tiles, "Moving");
+        // negate y_tiles to account for motors being in reverse mode
+        move(-y_tiles, x_tiles, "Moving");
     }
 
     public void strafeRight_enc(double tiles){
