@@ -156,15 +156,15 @@ public class DriverControl2023 extends LinearOpMode {
 
             // Get movement commands
             if(gamepad1.dpad_up) {
-                leftPower = 1;
-                rightPower = 1;
-            }
-            else if(gamepad1.dpad_down) {
                 leftPower = -1;
                 rightPower = -1;
             }
+            else if(gamepad1.dpad_down) {
+                leftPower = 1;
+                rightPower = 1;
+            }
             else {
-                leftPower  = gamepad1.left_stick_y;
+                leftPower  = (Math.abs(gamepad1.left_stick_y)*100)*((gamepad1.left_stick_y)*100)/10000;
                 rightPower = gamepad1.right_stick_y;
             }
 

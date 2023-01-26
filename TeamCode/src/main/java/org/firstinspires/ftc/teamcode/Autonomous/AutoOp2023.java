@@ -33,6 +33,8 @@ public abstract class AutoOp2023 extends LinearOpMode {
     protected ElapsedTime runtime = new ElapsedTime();
     protected Telemetry telemetry_ = null;
 
+    private double fbMod = 0.49; // Distance modifier for encoder based forward and backward functions
+    private double strafeMod = 0.58; // Distance modifier for encoder based strafing functions
     private double quitSpeed = 2.0; // Determines if encoder based wheels are taking too long
     private double speed = 0.77; // Used for @deprecated time based robot movement
     private double strafeSpd = 1.2; // Used for @deprecated time based robot movement
@@ -158,10 +160,10 @@ public abstract class AutoOp2023 extends LinearOpMode {
         move(-y_tiles, x_tiles, "Moving");
     }
 
-    public void strafeRight_enc(double tiles){
+    public void strafeLeft_enc(double tiles){
         move(0.0, -tiles, "Strafing Right");
     }
-    public void strafeLeft_enc(double tiles){
+    public void strafeRight_enc(double tiles){
         move(0.0, tiles, "Strafing Left");
     }
     public void forward_enc(double tiles){
@@ -364,39 +366,39 @@ public abstract class AutoOp2023 extends LinearOpMode {
 
     /** Movement Interface **/
     public void strafeRight(double tiles){
-        strafeRight_enc(tiles*0.55);
+        strafeRight_enc(tiles*strafeMod);
     }
     public void strafeRight(double tiles, double speed){
         double temp = wheelPower;
         wheelPower = speed;
-        strafeRight_enc(tiles*0.45);
+        strafeRight_enc(tiles*strafeMod);
         wheelPower = temp;
     }
     public void strafeLeft(double tiles){
-        strafeLeft_enc(tiles*0.55);
+        strafeLeft_enc(tiles*strafeMod);
     }
     public void strafeLeft(double tiles, double speed){
         double temp = wheelPower;
         wheelPower = speed;
-        strafeLeft_enc(tiles*0.45);
+        strafeLeft_enc(tiles*strafeMod);
         wheelPower = temp;
     }
     public void forward(double tiles){
-        forward_enc(tiles*0.45);
+       forward_enc(tiles*fbMod);
     }
     public void forward(double tiles, double speed){
         double temp = wheelPower;
         wheelPower = speed;
-        forward_enc(tiles*0.45);
+        forward_enc(tiles*fbMod);
         wheelPower = temp;
     }
     public void backward(double tiles){
-        backward_enc(tiles*0.45);
+        backward_enc(tiles*fbMod);
     }
     public void backward(double tiles, double speed){
         double temp = wheelPower;
         wheelPower = speed;
-        backward_enc(tiles*0.45);
+        backward_enc(tiles*fbMod);
         wheelPower = temp;
     }
     public void left(double quarters){
