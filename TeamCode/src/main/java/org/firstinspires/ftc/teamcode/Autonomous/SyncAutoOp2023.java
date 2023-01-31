@@ -4,9 +4,10 @@
 
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Autonomous.syncop.BaseController;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.Autonomous.syncop.BaseController;
 
 public abstract class SyncAutoOp2023 extends LinearOpMode {
     private BaseController base = null;
@@ -23,7 +24,7 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
     public boolean busy(){
         return base.busy();
     }
-    
+
     public void sync(){
         while(opModeIsActive() && busy()){
             telemetry.addData("Path", "Base{%s}", base.busy() ? "T" : "F");

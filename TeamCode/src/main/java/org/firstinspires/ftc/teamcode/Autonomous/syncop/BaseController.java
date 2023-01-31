@@ -70,6 +70,7 @@ public class BaseController {
     }
 
     public void move(double x_tiles, double y_tiles, double power){
+        /** note that while it is possible to vastly increase complexity to avoid syncing here, for now it does not seem worth it **/
         sync(); // prevent multiple base commands from being executed out of order
         
         set_wheel_mode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
