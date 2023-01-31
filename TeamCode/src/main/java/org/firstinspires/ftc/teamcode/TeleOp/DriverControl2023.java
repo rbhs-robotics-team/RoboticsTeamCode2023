@@ -273,6 +273,16 @@ public class DriverControl2023 extends LinearOpMode {
                 lift.setPower(gamepad2.left_trigger);
                 liftPosition = lift.getCurrentPosition()-(int)(gamepad2.right_trigger*50);
             }
+            else if(gamepad2.left_stick_y<0) {
+                lift.setTargetPosition(3200);
+                lift.setPower(Math.abs(gamepad2.left_stick_y));
+                liftPosition = lift.getCurrentPosition()+(int)(-gamepad2.left_stick_y*30);
+            }
+            else if(gamepad2.left_stick_y>0) {
+                lift.setTargetPosition(0);
+                lift.setPower(Math.abs(gamepad2.left_stick_y));
+                liftPosition = lift.getCurrentPosition()-(int)(-gamepad2.left_stick_y*50);
+            }
             else {
                 lift.setTargetPosition(liftPosition);
                 lift.setPower(1);

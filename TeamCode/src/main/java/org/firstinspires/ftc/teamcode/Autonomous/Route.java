@@ -24,7 +24,7 @@ public class Route extends AutoOp2023 {
     @Override public void runOpMode() throws InterruptedException {
         initialize(hardwareMap, telemetry);
 
-        camera = new Camera("Webcam 1");
+        camera = new Camera(hardwareMap,"Webcam 1");
 
         camera.capture();
 
