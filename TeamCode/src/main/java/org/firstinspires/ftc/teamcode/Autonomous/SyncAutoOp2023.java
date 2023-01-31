@@ -23,14 +23,14 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
     public boolean busy(){
         return base.busy();
     }
-
+    
     public void sync(){
         while(opModeIsActive() && busy()){
             telemetry.addData("Path", "Base{%s}", base.busy() ? "T" : "F");
             telemetry.update();
         }
     }
-    
+
     // component functions
     public void forward(double tiles, double power){ base.forward(tiles, power); }
 

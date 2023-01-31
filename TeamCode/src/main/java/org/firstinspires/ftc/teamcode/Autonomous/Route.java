@@ -17,7 +17,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="Route", group="Test")
-public class Route extends AutoOp2023 {
+public class Route extends SyncAutoOp2023 {
 
     private Camera camera;
     
@@ -32,5 +32,7 @@ public class Route extends AutoOp2023 {
         
         forward(0.5, 0.2);
         strafeLeft(1.0, 0.2);
+
+        sync();
     }
 }
