@@ -26,6 +26,4 @@ public class SlideController {
         // save telemetry reference
         this.telemetry = telemetry;
     }
-
-    
 }
