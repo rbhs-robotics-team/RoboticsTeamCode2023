@@ -18,10 +18,13 @@ public class ClawController {
     protected ElapsedTime runtime = new ElapsedTime();
 
     // external reference to opModeActive - probably a cleaner way to do this...
-    Function<boolean, boolean> op_mode_is_active_pointer;
+    private Function<boolean, boolean> op_mode_is_active_pointer;
 
     // external logging
     protected Telemetry telemetry = null;
+
+    // internal state
+    private boolean is_open = false;
     
     public ClawController(HardwareMap hardware_map, Telemetry telemetry, Function<boolean, boolean> op_mode_is_active_pointer){
         // get lift hardware
@@ -46,15 +49,19 @@ public class ClawController {
     }
     
     public boolean busy(){
-        return false;
+        return is_open && claw.isBusy();
     }
 
     public void grasp(){
+        is_open = false;
+
         claw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         claw.setPower(-0.35);
     }
 
     public void open(boolean wide){
+        is_open = true;
+
         int pos = 5;
 
         pos += wide ? 5 : 0;
