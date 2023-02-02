@@ -27,6 +27,12 @@ public class SlideController {
         this.telemetry = telemetry;
     }
 
+    // sync
+    public boolean busy(){
+        return lift.isBusy();
+    }
+    
+    // simplified motor interface
     public void lift(String position, boolean drop){
         int pos = lift.getCurrentPosition();
 
@@ -43,6 +49,7 @@ public class SlideController {
         pos -= drop ? 400 : 0;
         pos = (pos < 0) 0 : pos;
 
-        
+        lift.setTargetPosition(pos);
+        lift.setPower(0.5);
     }
 }

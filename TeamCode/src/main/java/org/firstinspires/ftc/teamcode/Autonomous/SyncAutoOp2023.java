@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.syncop.BaseController;
 
 public abstract class SyncAutoOp2023 extends LinearOpMode {
     private BaseController base = null;
+    private SlideController slide = null;
 
     private Telemetry telemetry = null;
 
@@ -18,16 +19,17 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
         this.telemetry = telemetry;
         
         base = new BaseController(hardware_map, telemetry);
+        slide = new SlideController(hardware_map, telemetry);
     }
 
     // packaged functions
     public boolean busy(){
-        return base.busy();
+        return base.busy() || slide.busy();
     }
 
     public void sync(){
         while(opModeIsActive() && busy()){
-            telemetry.addData("Path", "Base{%s}", base.busy() ? "T" : "F");
+            telemetry.addData("Path", "Base{%s} Slide{%s}", base.busy() ? "T" : "F", slide.busy() ? "T" : "F");
             telemetry.update();
         }
     }
@@ -48,4 +50,6 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
     public void strafe_left(double tiles, double power){ base.strafe_left(tiles, power); }
 
     public void strafe_left(double tiles){ base.strafe_left(tiles); }
+
+    public void lift(String position){ slide.lift(position); }
 }

@@ -65,14 +65,7 @@ public class BaseController {
     public boolean busy(){
         return left_front.isBusy() || right_front.isBusy() || left_back.isBusy() || right_back.isBusy();
     }
-
-    public void sync(){
-        while(opModeIsActive() && busy()){
-            telemetry.addData("Path", "LF{%s} RF{%s} LB{%s} RB{%s}", left_front.isBusy() ? "T" : "F", right_front.isBusy() ? "T" : "F", left_back.isBusy() ? "T" : "F", right_back.isBusy() ? "T" : "F");
-            telemetry.update();
-        }
-    }
-
+    
     public void move(double x_tiles, double y_tiles, double power){
         /** note that while it is possible to vastly increase complexity to avoid syncing here, for now it does not seem worth it **/
         sync(); // prevent multiple base commands from being executed out of order
