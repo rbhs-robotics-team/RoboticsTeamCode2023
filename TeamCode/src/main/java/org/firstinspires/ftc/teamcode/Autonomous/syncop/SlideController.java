@@ -26,4 +26,23 @@ public class SlideController {
         // save telemetry reference
         this.telemetry = telemetry;
     }
+
+    public void lift(String position, boolean drop){
+        int pos = lift.getCurrentPosition();
+
+        switch(position){
+            case "max": pos = 3200; break;
+            case "high": pos = 3000; break;
+            case "medium": pos = 2150; break;
+            case "low": pos = 1300; break;
+            case "ground":
+            case "min":
+                pos = 0; break;
+        }
+
+        pos -= drop ? 400 : 0;
+        pos = (pos < 0) 0 : pos;
+
+        
+    }
 }

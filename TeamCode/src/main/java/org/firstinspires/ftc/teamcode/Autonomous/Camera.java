@@ -34,9 +34,9 @@ public class Camera {
     }
 
     void wait_till_ready(){
-        while(!ready){};
+        while(!ready){}; // really should be done using a semaphore... but... yeah
     }
-
+    
     void capture(){
         wait_till_ready();
         sleeveDetection.getPosition();
