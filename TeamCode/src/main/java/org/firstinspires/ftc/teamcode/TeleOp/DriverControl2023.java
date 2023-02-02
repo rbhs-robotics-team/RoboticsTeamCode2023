@@ -131,6 +131,8 @@ public class DriverControl2023 extends LinearOpMode {
         double delta = 0.15; // acceleration (power change per iteration -> lower number=larger acceleration)
         int liftPosition = 0; //current position of lift
         double clawPosition = 0; // current position of claw
+        double clawAlt = False;
+        double armAlt = False;
 
         // Gyro Config
         BNO055IMU.Parameters params = new BNO055IMU.Parameters();
@@ -290,17 +292,23 @@ public class DriverControl2023 extends LinearOpMode {
 
             telemetry.addData("Lift", "position=(%3.0f)", (double) lift.getCurrentPosition());
 
-
+            // Claw alternate mode
+            if(gamepad2.x) {
+                clawAlt = !clawAlt;
+            }
             // Claw
-            if(gamepad2.right_bumper) {
-                claw.setPower(.35);
+            if(!clawAlt) {
+
+            } else {
+                if (gamepad2.right_bumper) {
+                    claw.setPower(.35);
+                } else if (gamepad2.left_bumper) {
+                    claw.setPower(-.35);
+                } else {
+                    claw.setPower(0);
+                }
             }
-            else if(gamepad2.left_bumper) {
-                claw.setPower(-.35);
-            }
-            else {
-                claw.setPower(0);
-            }
+
 
 
             /*
