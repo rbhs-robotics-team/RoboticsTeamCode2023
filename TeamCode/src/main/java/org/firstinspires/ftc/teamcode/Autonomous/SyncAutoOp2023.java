@@ -40,19 +40,12 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
 
     // component functions
     public void forward(double tiles, double power){ base.forward(tiles, power); }
-
     public void forward(double tiles){ base.forward(tiles); }
-
     public void backward(double tiles, double power){ base.backward(tiles, power); }
-
     public void backward(double tiles){ base.backward(tiles); }
-
     public void strafe_right(double tiles, double power){ base.strafe_right(tiles, power); }
-
     public void strafe_right(double tiles){ base.strafe_right(tiles); }
-
     public void strafe_left(double tiles, double power){ base.strafe_left(tiles, power); }
-
     public void strafe_left(double tiles){ base.strafe_left(tiles); }
 
     public void lift(String position){ slide.lift(position); }
