@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.function.Function;
+
 public class BaseController {
     // motors
     protected DcMotor left_front = null;
@@ -18,6 +20,9 @@ public class BaseController {
     // external logging
     protected Telemetry telemetry = null;
 
+    // external reference to opModeActive - probably a cleaner way to do this...
+    Function<boolean, boolean> op_mode_is_active_pointer;
+
     // constants (some public to facilitate native use of 'move' function)
     private const double ticks_per_tile = 1120 / 4 / Math.PI * 24 * 1.0; // 1120 ticks/rev * 1/4π rev/in * 24 in/tile * gear_ratio
     
@@ -26,7 +31,7 @@ public class BaseController {
 
     public const double default_power = 1.0;
 
-    public BaseControllerBase(HardwareMap hardware_map, Telemetry telemetry) {
+    public BaseControllerBase(HardwareMap hardware_map, Telemetry telemetry, Function<boolean, boolean> op_mode_is_active_pointer) {
         // link to respective hardware bus
         left_front = hardware_map.get(DcMotor.class, "frontLeft");
         left_back = hardware_map.get(DcMotor.class, "backLeft");
@@ -44,10 +49,15 @@ public class BaseController {
         right_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        // save telemetry
+        // save telemetry and opmode
         this.telemetry = telemetry;
+        this.op_mode_is_active_pointer = op_mode_is_active_pointer;
     }
 
+    private boolean op_mode_is_active(){
+        return op_mode_is_active_pointer.apply(true); // note input should not matter
+    }
+    
     private void set_wheel_mode(DcMotor.RunMode mode){
         leftfront.setMode(mode);
         leftback.setMode(mode);
@@ -64,6 +74,10 @@ public class BaseController {
 
     public boolean busy(){
         return left_front.isBusy() || right_front.isBusy() || left_back.isBusy() || right_back.isBusy();
+    }
+
+    private void sync(){
+        while(busy()){} // this should also consider 
     }
     
     public void move(double x_tiles, double y_tiles, double power){

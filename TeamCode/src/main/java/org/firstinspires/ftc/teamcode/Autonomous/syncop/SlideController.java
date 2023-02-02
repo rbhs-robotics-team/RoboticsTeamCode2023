@@ -15,7 +15,7 @@ public class SlideController {
     // external logging
     protected Telemetry telemetry = null;
 
-    public SlideController(HardwareMap hardware_map, Telemetry telemetry){
+    public SlideController(HardwareMap hardware_map, Telemetry telemetry, Function<boolean, boolean> op_mode_is_active_pointer){
         // get lift hardware
         lift = hardwareMap.get(DcMotor.class, "lift");
 
@@ -25,6 +25,8 @@ public class SlideController {
 
         // save telemetry reference
         this.telemetry = telemetry;
+        
+        // opmode_is_active_pointer ignored
     }
 
     // sync
