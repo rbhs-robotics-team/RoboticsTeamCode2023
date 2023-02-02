@@ -77,7 +77,7 @@ public class BaseController {
     }
 
     private void sync(){
-        while(busy()){} // this should also consider 
+        while(op_mode_is_active() && busy()){}
     }
     
     public void move(double x_tiles, double y_tiles, double power){
