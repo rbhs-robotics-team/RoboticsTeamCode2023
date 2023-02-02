@@ -8,3 +8,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+public class ClawController extends Thread {
+    
+    
+    public void run(){
+
+    }
+}
