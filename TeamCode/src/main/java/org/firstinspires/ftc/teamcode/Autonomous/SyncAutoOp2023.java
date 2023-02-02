@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Autonomous.syncop.*;
 
@@ -18,6 +19,7 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
     private SlideController slide = null;
     private ClawController claw = null;
 
+    protected ElapsedTime runtime = new ElapsedTime();
     protected Telemetry telemetry = null;
 
     public void initialize(HardwareMap hardware_map, Telemetry telemetry){
@@ -58,4 +60,12 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
     public void grasp(){ claw.grasp(); }
     public void open(){ claw.open(false); }
     public void open(boolean wide){ claw.open(wide); }
+
+    public void pause(double seconds){
+        runtime.reset();
+        while(opModeIsActive() && (runtime.seconds() < seconds)){
+            //telemetry.addData("Waiting", "%2.5f / %2.5f", runtime.seconds(), seconds);
+            //telemetry.update();
+        }
+    }
 }

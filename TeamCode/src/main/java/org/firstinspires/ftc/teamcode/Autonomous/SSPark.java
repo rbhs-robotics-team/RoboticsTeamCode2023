@@ -7,8 +7,8 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name = "SS NEW")
-public class SSPark1 extends AutoOp2023 {
+@Autonomous(name = "Old SS")
+public class SSPark extends AutoOp2023 {
 
     private SleeveDetection sleeveDetection;
     private OpenCvCamera camera;
@@ -46,7 +46,7 @@ public class SSPark1 extends AutoOp2023 {
         SleeveDetection.ParkingPosition position = sleeveDetection.getPosition();
         telemetry.addData("Position", position);
         telemetry.update();
-        backward(1.2, 0.2);
+        forward(1.2, 0.2);
         if(position.equals(SleeveDetection.ParkingPosition.LEFT)) {
             strafeLeft(1.3, 0.2);
         } else if(position.equals(SleeveDetection.ParkingPosition.RIGHT)) {
