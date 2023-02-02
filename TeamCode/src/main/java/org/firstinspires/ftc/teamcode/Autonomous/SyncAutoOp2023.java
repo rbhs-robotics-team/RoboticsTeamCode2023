@@ -56,4 +56,7 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
     public void strafe_left(double tiles){ base.strafe_left(tiles); }
 
     public void lift(String position){ slide.lift(position); }
+
+    public void grasp(){ claw.grasp(); }
+    public void open(boolean wide){ claw.open(wide); }
 }
