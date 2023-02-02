@@ -31,7 +31,12 @@ public class Route extends SyncAutoOp2023 {
         waitForStart();
         
         forward(1.0, 0.2);
-        
+        lift("max");
+        open();
+        sync();
+
+        grasp();
+        lift("min");
         sync();
     }
 }
