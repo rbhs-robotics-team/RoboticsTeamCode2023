@@ -131,8 +131,9 @@ public class DriverControl2023 extends LinearOpMode {
         double delta = 0.15; // acceleration (power change per iteration -> lower number=larger acceleration)
         int liftPosition = 0; //current position of lift
         double clawPosition = 0; // current position of claw
-        double clawAlt = False;
-        double armAlt = False;
+
+        boolean clawAlt = false;
+        boolean armAlt = false;
 
         // Gyro Config
         BNO055IMU.Parameters params = new BNO055IMU.Parameters();

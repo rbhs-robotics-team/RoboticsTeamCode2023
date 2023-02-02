@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.function.Function;
+
 public class SlideController {
     // motor
     protected DcMotor lift = null;
@@ -15,9 +17,9 @@ public class SlideController {
     // external logging
     protected Telemetry telemetry = null;
 
-    public SlideController(HardwareMap hardware_map, Telemetry telemetry, Function<boolean, boolean> op_mode_is_active_pointer){
+    public SlideController(HardwareMap hardware_map, Telemetry telemetry, Function<Boolean, Boolean> op_mode_is_active_pointer){
         // get lift hardware
-        lift = hardwareMap.get(DcMotor.class, "lift");
+        lift = hardware_map.get(DcMotor.class, "lift");
 
         // set lift mode
         lift.setDirection(DcMotor.Direction.FORWARD);
@@ -49,7 +51,7 @@ public class SlideController {
         }
 
         pos -= drop ? 400 : 0;
-        pos = (pos < 0) 0 : pos;
+        pos = (pos < 0) ? 0 : pos;
 
         lift.setTargetPosition(pos);
         lift.setPower(0.5);

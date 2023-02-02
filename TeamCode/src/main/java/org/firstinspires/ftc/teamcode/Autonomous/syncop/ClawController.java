@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.function.Function;
+
 public class ClawController {
     // motor
     private DcMotor claw = null;
@@ -18,7 +20,7 @@ public class ClawController {
     protected ElapsedTime runtime = new ElapsedTime();
 
     // external reference to opModeActive - probably a cleaner way to do this...
-    private Function<boolean, boolean> op_mode_is_active_pointer;
+    private Function<Boolean, Boolean> op_mode_is_active_pointer;
 
     // external logging
     protected Telemetry telemetry = null;
@@ -26,9 +28,9 @@ public class ClawController {
     // internal state
     private boolean is_open = false;
     
-    public ClawController(HardwareMap hardware_map, Telemetry telemetry, Function<boolean, boolean> op_mode_is_active_pointer){
+    public ClawController(HardwareMap hardware_map, Telemetry telemetry, Function<Boolean, Boolean> op_mode_is_active_pointer){
         // get lift hardware
-        claw = hardwareMap.get(DcMotor.class, "claw");
+        claw = hardware_map.get(DcMotor.class, "claw");
 
         // set mode
         claw.setDirection(DcMotor.Direction.FORWARD);

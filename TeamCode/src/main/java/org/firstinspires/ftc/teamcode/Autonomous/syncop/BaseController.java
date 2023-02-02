@@ -21,17 +21,17 @@ public class BaseController {
     protected Telemetry telemetry = null;
 
     // external reference to opModeActive - probably a cleaner way to do this...
-    Function<boolean, boolean> op_mode_is_active_pointer;
+    private Function<Boolean, Boolean> op_mode_is_active_pointer;
 
-    // constants (some public to facilitate native use of 'move' function)
-    private const double ticks_per_tile = 1120 / 4 / Math.PI * 24 * 1.0; // 1120 ticks/rev * 1/4π rev/in * 24 in/tile * gear_ratio
+    //constants (some public to facilitate native use of 'move' function)
+    private double ticks_per_tile = 1120 / 4 / Math.PI * 24 * 1.0; // 1120 ticks/rev * 1/4π rev/in * 24 in/tile * gear_ratio
     
-    public const double forward_backward_tile_mod = 0.49;
-    public const double strafe_tile_mod = 0.58;
+    public double forward_backward_tile_mod = 0.49;
+    public double strafe_tile_mod = 0.58;
 
-    public const double default_power = 1.0;
+    public double default_power = 1.0;
 
-    public BaseControllerBase(HardwareMap hardware_map, Telemetry telemetry, Function<boolean, boolean> op_mode_is_active_pointer) {
+    public BaseController(HardwareMap hardware_map, Telemetry telemetry, Function<Boolean, Boolean> op_mode_is_active_pointer) {
         // link to respective hardware bus
         left_front = hardware_map.get(DcMotor.class, "frontLeft");
         left_back = hardware_map.get(DcMotor.class, "backLeft");
@@ -59,10 +59,10 @@ public class BaseController {
     }
     
     private void set_wheel_mode(DcMotor.RunMode mode){
-        leftfront.setMode(mode);
-        leftback.setMode(mode);
-        rightfront.setMode(mode);
-        rightback.setMode(mode);
+        left_front.setMode(mode);
+        left_back.setMode(mode);
+        right_front.setMode(mode);
+        right_back.setMode(mode);
     }
 
     private void set_wheel_power(double power){

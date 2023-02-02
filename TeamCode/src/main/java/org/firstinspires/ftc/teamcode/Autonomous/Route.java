@@ -36,6 +36,7 @@ public class Route extends SyncAutoOp2023 {
         sync();
 
         grasp();
+        backward(1.0, 0.2);
         lift("min");
         sync();
     }
