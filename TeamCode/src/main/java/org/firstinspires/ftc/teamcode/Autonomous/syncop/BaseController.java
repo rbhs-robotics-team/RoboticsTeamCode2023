@@ -8,6 +8,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.hardware.Gyroscope;
+
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import java.util.function.Function;
 
 public class BaseController {
@@ -16,6 +25,16 @@ public class BaseController {
     protected DcMotor left_back = null;
     protected DcMotor right_front = null;
     protected DcMotor right_back = null;
+
+    // gyroscope vars
+    protected BNO055IMU imu = null;
+    protected double zero_heading = 0.0;
+    private Orientation angles = null;
+    private double margin = 1; // Margin of error for gyrometer based rotation
+    protected double wheelPower = 0.8; // Wheel speed used for gyrometer based rotation
+
+    // runtime (used for rotation)
+    protected ElapsedTime runtime = new ElapsedTime();
 
     // external logging
     protected Telemetry telemetry = null;
@@ -48,6 +67,17 @@ public class BaseController {
         left_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // gyroscope initialization
+        BNO055IMU.Parameters params = new BNO055IMU.Parameters();
+        params.mode = BNO055IMU.SensorMode.IMU;
+        params.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        params.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        params.loggingEnabled = false;
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(params);
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        zero_heading = angles.firstAngle;
 
         // save telemetry and opmode
         this.telemetry = telemetry;
@@ -134,5 +164,102 @@ public class BaseController {
 
     public void strafe_left(double tiles){ strafe_left(tiles, default_power); }
 
-    /** ! ADD TURNING CODE ! **/
+    public void stopWheels(){
+        leftWheels(0.0);
+        rightWheels(0.0);
+    }
+
+
+    /** Gyrometer Access **/
+    public double getAngle(){
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return (angles.firstAngle - zero_heading + 360 + margin) % 360.0;
+    }
+    public double getNegAngle(){
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return (angles.firstAngle - zero_heading - 720 - margin) % 360.0;
+    }
+    public double getSmAngle(){
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return (angles.firstAngle - zero_heading + 360) % 360.0 - 180.0;
+    }
+
+    /** Gyroscope-Based Rotation **/
+    public void left_gyro(double quarters){
+        if(quarters > 2){
+            left_gyro(quarters-2);
+            quarters -= 2;
+        }
+        double a = 0.0;
+        leftWheels(-wheelPower);
+        rightWheels(wheelPower);
+        runtime.reset();
+        while(opModeIsActive() && ((a=getAngle()) > 90*quarters+margin)){
+            telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry.update();
+        }
+        pause(0.05);
+        while(opModeIsActive() && ((a=getAngle()) < 90*quarters+margin)){
+            telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry.update();
+        }
+        leftWheels(wheelPower*0.2);
+        rightWheels(-wheelPower*0.2);
+        while(opModeIsActive() && ((a=getAngle()) > 90*quarters+margin)){
+            telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry.update();
+        }
+        stopWheels();
+        runtime.reset();
+        zero_heading = (zero_heading + 90.0) % 360.0;
+    }
+
+    public void right_gyro(double quarters){
+        if(quarters > 2){
+            right_gyro(quarters-2);
+            quarters -= 2;
+        }
+        double a = 0.0;
+        leftWheels(wheelPower);
+        rightWheels(-wheelPower);
+        runtime.reset();
+        while(opModeIsActive() && ((a=getNegAngle()%360) < -90*quarters-margin)){
+            telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry.update();
+        }
+        pause(0.05);
+        while(opModeIsActive() && ((a=getNegAngle()) > -90*quarters-margin)){
+            telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry.update();
+        }
+        leftWheels(-wheelPower*0.2);
+        rightWheels(wheelPower*0.2);
+        while(opModeIsActive() && ((a=getNegAngle()) < -90*quarters-margin)){
+            telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry.update();
+        }
+        stopWheels();
+        runtime.reset();
+        zero_heading = (zero_heading - 90.0) % 360.0;
+    }
+
+    public void turnZero(double margin, String name){
+        double a = getSmAngle();
+        runtime.reset();
+        while(Math.abs(a) > margin){
+            leftWheels(a*0.005);
+            rightWheels(-a*0.005);
+            telemetry.addData("Path", "%s: %2.5f S Elapsed, %2.3", name, a, runtime.seconds());
+            telemetry.update();
+            a = getSmAngle();
+        }
+        stopWheels();
+    }
+    public void turnZero(double margin){
+        turnZero(margin, "Turning");
+    }
+    public void turnZero(){
+        turnZero(5.0);
+    }
+
 };
