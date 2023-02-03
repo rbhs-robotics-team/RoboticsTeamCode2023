@@ -39,7 +39,7 @@ public class BaseController {
     // external logging
     protected Telemetry telemetry = null;
 
-    // external reference to opModeActive - probably a cleaner way to do this...
+    // external reference to opModeActive - there probably is a cleaner way to do this...
     private Function<Boolean, Boolean> op_mode_is_active_pointer;
 
     //constants (some public to facilitate native use of 'move' function)
@@ -74,9 +74,11 @@ public class BaseController {
         params.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         params.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         params.loggingEnabled = false;
+
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(params);
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        
         zero_heading = angles.firstAngle;
 
         // save telemetry and opmode
@@ -169,16 +171,17 @@ public class BaseController {
         rightWheels(0.0);
     }
 
-
     /** Gyrometer Access **/
     public double getAngle(){
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return (angles.firstAngle - zero_heading + 360 + margin) % 360.0;
     }
+
     public double getNegAngle(){
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return (angles.firstAngle - zero_heading - 720 - margin) % 360.0;
     }
+
     public double getSmAngle(){
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return (angles.firstAngle - zero_heading + 360) % 360.0 - 180.0;
@@ -255,11 +258,12 @@ public class BaseController {
         }
         stopWheels();
     }
+    
     public void turnZero(double margin){
         turnZero(margin, "Turning");
     }
+
     public void turnZero(){
         turnZero(5.0);
     }
-
 };
