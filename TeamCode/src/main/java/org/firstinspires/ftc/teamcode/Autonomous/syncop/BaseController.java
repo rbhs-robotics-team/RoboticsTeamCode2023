@@ -38,6 +38,8 @@ public class BaseController {
     // runtime (used for rotation)
     protected ElapsedTime runtime = new ElapsedTime();
 
+    private boolean is_turning = false;
+
     // external logging
     protected Telemetry telemetry = null;
     protected LinearOpMode autoOp = null;
@@ -127,7 +129,7 @@ public class BaseController {
     }
 
     public boolean busy(){
-        return left_front.isBusy() || right_front.isBusy() || left_back.isBusy() || right_back.isBusy();
+        return is_turning || left_front.isBusy() || right_front.isBusy() || left_back.isBusy() || right_back.isBusy();
     }
 
     private void sync(){
@@ -197,11 +199,6 @@ public class BaseController {
 
     public void strafe_left(double tiles){ strafe_left(tiles, default_power); }
 
-    public void stopWheels(){
-        set_left_wheel_power(0.0);
-        set_right_wheel_power(0.0);
-    }
-
     /** Gyrometer Access **/
     public double getAngle(){
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -218,7 +215,7 @@ public class BaseController {
         return (angles.firstAngle - zero_heading + 360) % 360.0 - 180.0;
     }
 
-    public void resetZeroHeading () {
+    public void reset_zero_heading(){
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         zero_heading = angles.firstAngle;
     }
@@ -251,7 +248,7 @@ public class BaseController {
             telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
         }
-        stopWheels();
+        set_wheel_power(0.0);
         runtime.reset();
         zero_heading = (zero_heading + 90.0*quarters) % 360.0;
     }
@@ -290,7 +287,7 @@ public class BaseController {
             telemetry.update();
         }
         
-        stopWheels();
+        set_wheel_power(0.0);
         runtime.reset();
         zero_heading = (zero_heading + 360 - 90*quarters) % 360.0;
     }
@@ -305,7 +302,7 @@ public class BaseController {
             telemetry.update();
             a = getSmAngle();
         }
-        stopWheels();
+        set_wheel_power(0.0);
     }
     
     public void turnZero(double margin){
@@ -314,5 +311,29 @@ public class BaseController {
 
     public void turnZero(){
         turnZero(5.0);
+    }
+
+    public void turn(double quarters, double power, int stages){
+        // manage invalid parameters
+        if(power == 0.0){
+            telemetry.addData("Path", "Attempted to turn with zero power");
+            telemetry.update();
+            throw new SyncError("Attempted to turn with zero power");
+        } else if(stages == 0){
+            telemetry.addData("Path", "Attempted to turn in zero stages");
+            telemetry.update();
+            throw new SyncError("Attempted to turn in zero stages");
+        }
+        
+        // sync up with rest of base - acquire control over base motors
+        sync();
+        
+        // set 'is_turning' to indicate a 'busy' state (however should not matter since this method has control...)
+        is_turning = true;
+        set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        
+
+        is_turning = false;
     }
 };

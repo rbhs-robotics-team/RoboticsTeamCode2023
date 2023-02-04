@@ -60,15 +60,16 @@ public class Route extends SyncAutoOp2023 {
 
             backward(0.3, 0.2);
             sync();
-
+            
             right(0.5);
             lift("min");
             sync();
-
         } catch(SyncStopped e){
-            telemetry.addData("Path", e.getMessage());
-            telemetry.update();
+            telemetry.addData("Path", "SyncStopped{%s}", e.getMessage());
+        } catch(SyncError e) {
+            telemetry.addData("Path", "SyncError{%s}", e.getMessage());
         } finally {
+            telemetry.update();
             shutdown();
         }
     }
