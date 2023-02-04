@@ -48,13 +48,18 @@ public class SlideController {
             case "low": pos = 1300; break;
             case "ground":
             case "min":
+            default:
                 pos = 0; break;
         }
 
         pos -= drop ? 400 : 0;
         pos = (pos < 0) ? 0 : pos;
 
+        set_wheel_mode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         lift.setTargetPosition(pos);
         lift.setPower(0.5);
+        
+        set_wheel_mode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
