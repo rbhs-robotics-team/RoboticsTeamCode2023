@@ -29,6 +29,7 @@ public class Route extends SyncAutoOp2023 {
         camera.capture();
 
         waitForStart();
+        resetZeroHeading();
         grasp();
         sync();
         forward(0.2, 0.2);
@@ -41,9 +42,13 @@ public class Route extends SyncAutoOp2023 {
         sync();
         forward(0.3, 0.2);
         sync();
+        lift("max", true);
+        sync();
         open();
         sync();
-        pause(1);
+        pause(.5);
+        lift("max");
+        sync();
         backward(0.3, 0.2);
         sync();
         right(0.5);

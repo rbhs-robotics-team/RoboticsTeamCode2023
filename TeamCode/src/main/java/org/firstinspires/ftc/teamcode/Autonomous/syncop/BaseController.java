@@ -40,6 +40,7 @@ public class BaseController {
 
     // external logging
     protected Telemetry telemetry = null;
+    protected LinearOpMode autoOp = null;
 
     // external reference to opModeActive - there probably is a cleaner way to do this...
     private Function<Boolean, Boolean> op_mode_is_active_pointer;
@@ -85,6 +86,7 @@ public class BaseController {
 
         // save telemetry and opmode
         this.telemetry = opMode.telemetry;
+        this.autoOp = opMode;
         this.op_mode_is_active_pointer = op_mode_is_active_pointer;
     }
 
@@ -205,6 +207,11 @@ public class BaseController {
     public double getSmAngle(){
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return (angles.firstAngle - zero_heading + 360) % 360.0 - 180.0;
+    }
+
+    public void resetZeroHeading () {
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        zero_heading = angles.firstAngle;
     }
 
     /** Gyroscope-Based Rotation **/

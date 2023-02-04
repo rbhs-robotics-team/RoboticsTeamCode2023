@@ -36,8 +36,11 @@ public class SlideController {
     public boolean busy(){
         return lift.isBusy();
     }
-    
+
+
     // simplified motor interface
+    public void lift(String position) { lift(position, false); }
+
     public void lift(String position, boolean drop){
         int pos = lift.getCurrentPosition();
 
@@ -55,11 +58,9 @@ public class SlideController {
         pos -= drop ? 400 : 0;
         pos = (pos < 0) ? 0 : pos;
 
-        set_wheel_mode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         lift.setTargetPosition(pos);
         lift.setPower(0.5);
         
-        set_wheel_mode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }

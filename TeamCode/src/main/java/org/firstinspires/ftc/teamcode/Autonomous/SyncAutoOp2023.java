@@ -44,6 +44,8 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
         }
     }
 
+    public void resetZeroHeading() { base.resetZeroHeading(); }
+
     // component functions
     public void forward(double tiles, double power){ base.forward(tiles, power); }
     public void forward(double tiles){ base.forward(tiles); }
