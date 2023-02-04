@@ -134,7 +134,7 @@ public class BaseController {
         while(op_mode_is_active() && busy()){}
     }
 
-    public void stop(){
+    public void shutdown(){
         set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
         set_wheel_power(0.0);
     }

@@ -55,7 +55,7 @@ public class ClawController {
         return is_open && claw.isBusy();
     }
 
-    public void stop(){
+    public void shutdown(){
         claw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         claw.setPower(0.0);
     }

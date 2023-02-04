@@ -37,7 +37,7 @@ public class SlideController {
         return lift.isBusy();
     }
 
-    public void stop(){
+    public void shutdown(){
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift.setPower(0.0);
     }
