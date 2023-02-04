@@ -106,14 +106,16 @@ public class BaseController {
         right_back.setPower(power);
     }
 
-    public void leftWheels(double spd){
-        left_front.setPower(spd);
-        left_back.setPower(spd);
+    public void set_left_wheel_power(double power){
+        left_front.setPower(power);
+        left_back.setPower(power);
     }
-    public void rightWheels(double spd){
-        right_front.setPower(spd);
-        right_back.setPower(spd);
+
+    public void set_right_wheel_power(double spd){
+        right_front.setPower(power);
+        right_back.setPower(power);
     }
+
     public void pause(double seconds){
         runtime.reset();
         while(op_mode_is_active() && (runtime.seconds() < seconds)){
@@ -185,8 +187,8 @@ public class BaseController {
     public void strafe_left(double tiles){ strafe_left(tiles, default_power); }
 
     public void stopWheels(){
-        leftWheels(0.0);
-        rightWheels(0.0);
+        set_left_wheel_power(0.0);
+        set_right_wheel_power(0.0);
     }
 
     /** Gyrometer Access **/
@@ -207,13 +209,16 @@ public class BaseController {
 
     /** Gyroscope-Based Rotation **/
     public void left_gyro(double quarters){
+        sync();
+        set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         if(quarters > 2){
             left_gyro(quarters-2);
             quarters -= 2;
         }
         double a = 0.0;
-        leftWheels(-wheelPower);
-        rightWheels(wheelPower);
+        set_left_wheel_power(-wheelPower);
+        set_right_wheel_power(wheelPower);
         runtime.reset();
         while(op_mode_is_active() && ((a=getAngle()) > 90*quarters+margin)){
             telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
@@ -224,8 +229,8 @@ public class BaseController {
             telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
         }
-        leftWheels(wheelPower*0.2);
-        rightWheels(-wheelPower*0.2);
+        set_left_wheel_power(wheelPower*0.2);
+        set_right_wheel_power(-wheelPower*0.2);
         while(op_mode_is_active() && ((a=getAngle()) > 90*quarters+margin)){
             telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
@@ -236,29 +241,39 @@ public class BaseController {
     }
 
     public void right_gyro(double quarters){
+        sync();
+        set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         if(quarters > 2){
             right_gyro(quarters-2);
             quarters -= 2;
         }
+
         double a = 0.0;
-        leftWheels(wheelPower);
-        rightWheels(-wheelPower);
+        set_left_wheel_power(wheelPower);
+        set_right_wheel_power(-wheelPower);
         runtime.reset();
+        
         while(op_mode_is_active() && ((a=getNegAngle()%360) < -90*quarters-margin)){
             telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
         }
+
         pause(0.05);
+
         while(op_mode_is_active() && ((a=getNegAngle()) > -90*quarters-margin)){
             telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
         }
-        leftWheels(-wheelPower*0.2);
-        rightWheels(wheelPower*0.2);
+        
+        set_left_wheel_power(-wheelPower*0.2);
+        set_right_wheel_power(wheelPower*0.2);
+        
         while(op_mode_is_active() && ((a=getNegAngle()) < -90*quarters-margin)){
             telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
         }
+        
         stopWheels();
         runtime.reset();
         zero_heading = (zero_heading - 90.0) % 360.0;
@@ -268,8 +283,8 @@ public class BaseController {
         double a = getSmAngle();
         runtime.reset();
         while(Math.abs(a) > margin){
-            leftWheels(a*0.005);
-            rightWheels(-a*0.005);
+            set_left_wheel_power(a*0.005);
+            set_right_wheel_power(-a*0.005);
             telemetry.addData("Path", "%s: %2.5f S Elapsed, %2.3", name, a, runtime.seconds());
             telemetry.update();
             a = getSmAngle();
