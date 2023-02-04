@@ -49,7 +49,7 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
             telemetry.update();
         }
 
-        if(!opModeIsActive()){ throw new SyncStopped("Stopped in sync"); }
+        if(!opModeIsActive()){ throw new SyncStopped("Stopped in sync - global"); }
     }
 
     public void resetZeroHeading() { base.resetZeroHeading(); }
