@@ -47,6 +47,7 @@ public class Route extends SyncAutoOp2023 {
 
         forward(0.3, 0.2);
         sync();
+        
         lift("max", true);
         sync();
 
@@ -62,5 +63,7 @@ public class Route extends SyncAutoOp2023 {
         right(0.5);
         lift("min");
         sync();
+
+        stop();
     }
 }
