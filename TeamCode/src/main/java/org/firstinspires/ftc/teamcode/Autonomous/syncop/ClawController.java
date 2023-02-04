@@ -4,6 +4,7 @@
 
 package org.firstinspires.ftc.teamcode.Autonomous.syncop;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -28,7 +29,7 @@ public class ClawController {
     // internal state
     private boolean is_open = false;
     
-    public ClawController(HardwareMap hardware_map, Telemetry telemetry, Function<Boolean, Boolean> op_mode_is_active_pointer){
+    public ClawController(HardwareMap hardware_map, LinearOpMode opMode, Function<Boolean, Boolean> op_mode_is_active_pointer){
         // get lift hardware
         claw = hardware_map.get(DcMotor.class, "claw");
 
@@ -42,7 +43,7 @@ public class ClawController {
         claw.setPower(0.1);
 
         // save telemetry and opmode pointer
-        this.telemetry = telemetry;
+        this.telemetry = opMode.telemetry;
         this.op_mode_is_active_pointer = op_mode_is_active_pointer;
     }
 

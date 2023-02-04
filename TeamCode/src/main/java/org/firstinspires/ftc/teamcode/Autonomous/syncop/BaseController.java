@@ -4,6 +4,7 @@
 
 package org.firstinspires.ftc.teamcode.Autonomous.syncop;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 import com.qualcomm.robotcore.hardware.Gyroscope;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -50,7 +52,7 @@ public class BaseController {
 
     public double default_power = 1.0;
 
-    public BaseController(HardwareMap hardware_map, Telemetry telemetry, Function<Boolean, Boolean> op_mode_is_active_pointer) {
+    public BaseController (HardwareMap hardware_map, LinearOpMode opMode, Function<Boolean, Boolean> op_mode_is_active_pointer) {
         // link to respective hardware bus
         left_front = hardware_map.get(DcMotor.class, "frontLeft");
         left_back = hardware_map.get(DcMotor.class, "backLeft");
@@ -75,14 +77,14 @@ public class BaseController {
         params.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         params.loggingEnabled = false;
 
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu = hardware_map.get(BNO055IMU.class, "imu");
         imu.initialize(params);
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         
         zero_heading = angles.firstAngle;
 
         // save telemetry and opmode
-        this.telemetry = telemetry;
+        this.telemetry = opMode.telemetry;
         this.op_mode_is_active_pointer = op_mode_is_active_pointer;
     }
 
@@ -102,6 +104,22 @@ public class BaseController {
         left_back.setPower(power);
         right_front.setPower(power);
         right_back.setPower(power);
+    }
+
+    public void leftWheels(double spd){
+        left_front.setPower(spd);
+        left_back.setPower(spd);
+    }
+    public void rightWheels(double spd){
+        right_front.setPower(spd);
+        right_back.setPower(spd);
+    }
+    public void pause(double seconds){
+        runtime.reset();
+        while(op_mode_is_active() && (runtime.seconds() < seconds)){
+            telemetry.addData("Waiting", "%2.5f / %2.5f", runtime.seconds(), seconds);
+            telemetry.update();
+        }
     }
 
     public boolean busy(){
@@ -197,18 +215,18 @@ public class BaseController {
         leftWheels(-wheelPower);
         rightWheels(wheelPower);
         runtime.reset();
-        while(opModeIsActive() && ((a=getAngle()) > 90*quarters+margin)){
+        while(op_mode_is_active() && ((a=getAngle()) > 90*quarters+margin)){
             telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
         }
         pause(0.05);
-        while(opModeIsActive() && ((a=getAngle()) < 90*quarters+margin)){
+        while(op_mode_is_active() && ((a=getAngle()) < 90*quarters+margin)){
             telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
         }
         leftWheels(wheelPower*0.2);
         rightWheels(-wheelPower*0.2);
-        while(opModeIsActive() && ((a=getAngle()) > 90*quarters+margin)){
+        while(op_mode_is_active() && ((a=getAngle()) > 90*quarters+margin)){
             telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
         }
@@ -226,18 +244,18 @@ public class BaseController {
         leftWheels(wheelPower);
         rightWheels(-wheelPower);
         runtime.reset();
-        while(opModeIsActive() && ((a=getNegAngle()%360) < -90*quarters-margin)){
+        while(op_mode_is_active() && ((a=getNegAngle()%360) < -90*quarters-margin)){
             telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
         }
         pause(0.05);
-        while(opModeIsActive() && ((a=getNegAngle()) > -90*quarters-margin)){
+        while(op_mode_is_active() && ((a=getNegAngle()) > -90*quarters-margin)){
             telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
         }
         leftWheels(-wheelPower*0.2);
         rightWheels(wheelPower*0.2);
-        while(opModeIsActive() && ((a=getNegAngle()) < -90*quarters-margin)){
+        while(op_mode_is_active() && ((a=getNegAngle()) < -90*quarters-margin)){
             telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
             telemetry.update();
         }

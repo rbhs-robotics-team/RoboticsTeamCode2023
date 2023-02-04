@@ -4,6 +4,7 @@
 
 package org.firstinspires.ftc.teamcode.Autonomous.syncop;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -17,7 +18,7 @@ public class SlideController {
     // external logging
     protected Telemetry telemetry = null;
 
-    public SlideController(HardwareMap hardware_map, Telemetry telemetry, Function<Boolean, Boolean> op_mode_is_active_pointer){
+    public SlideController(HardwareMap hardware_map, LinearOpMode opMode, Function<Boolean, Boolean> op_mode_is_active_pointer){
         // get lift hardware
         lift = hardware_map.get(DcMotor.class, "lift");
 
@@ -26,7 +27,7 @@ public class SlideController {
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // save telemetry reference
-        this.telemetry = telemetry;
+        this.telemetry = opMode.telemetry;
         
         // opmode_is_active_pointer ignored
     }
