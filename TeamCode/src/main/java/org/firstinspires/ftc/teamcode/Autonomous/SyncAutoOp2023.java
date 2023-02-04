@@ -26,7 +26,7 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
         this.telemetry = telemetry;
 
         Function<Boolean, Boolean> op_mode_is_active_pointer = (Boolean x) -> opModeIsActive();
-
+        
         base = new BaseController(hardware_map, this, op_mode_is_active_pointer);
         slide = new SlideController(hardware_map, this, op_mode_is_active_pointer);
         claw = new ClawController(hardware_map, this, op_mode_is_active_pointer);
@@ -39,8 +39,8 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
 
     public void sync(){
         while(opModeIsActive() && busy()){
-            //telemetry.addData("Path", "Base{%s} Slide{%s} Claw{%s}", base.busy() ? "T" : "F", slide.busy() ? "T" : "F", claw.busy() ? "T" : "F");
-            //telemetry.update();
+            telemetry.addData("Path", "Base{%s} Slide{%s} Claw{%s}", base.busy() ? "T" : "F", slide.busy() ? "T" : "F", claw.busy() ? "T" : "F");
+            telemetry.update();
         }
     }
 
@@ -69,8 +69,8 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
     public void pause(double seconds){
         runtime.reset();
         while(opModeIsActive() && (runtime.seconds() < seconds)){
-            //telemetry.addData("Waiting", "%2.5f / %2.5f", runtime.seconds(), seconds);
-            //telemetry.update();
+            telemetry.addData("Waiting", "%2.5f / %2.5f", runtime.seconds(), seconds);
+            telemetry.update();
         }
     }
 }
