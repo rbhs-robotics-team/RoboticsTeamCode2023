@@ -135,7 +135,7 @@ public class BaseController {
             telemetry.addData("Path", "LF{%s} RF{%s} LB{%s} RB{%s}", left_front.isBusy() ? "T" : "F", right_front.isBusy() ? "T" : "F", left_back.isBusy() ? "T" : "F", right_back.isBusy());
             telemetry.update();
         }
-        if(!opModeIsActive()){ throw InterruptedException("Stopped in sync"); }
+        if(!opModeIsActive()){ throw SyncStopped("Stopped in sync"); }
     }
 
     public void shutdown(){
