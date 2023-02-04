@@ -133,6 +133,11 @@ public class BaseController {
     private void sync(){
         while(op_mode_is_active() && busy()){}
     }
+
+    public void stop(){
+        set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
+        set_wheel_power(0.0);
+    }
     
     public void move(double x_tiles, double y_tiles, double power){
         /** note that while it is possible to vastly increase complexity to avoid syncing here, for now it does not seem worth it **/

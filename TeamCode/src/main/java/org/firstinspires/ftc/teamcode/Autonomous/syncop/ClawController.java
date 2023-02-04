@@ -55,6 +55,11 @@ public class ClawController {
         return is_open && claw.isBusy();
     }
 
+    public void stop(){
+        claw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        claw.setPower(0.0);
+    }
+
     public void grasp(){
         is_open = false;
 

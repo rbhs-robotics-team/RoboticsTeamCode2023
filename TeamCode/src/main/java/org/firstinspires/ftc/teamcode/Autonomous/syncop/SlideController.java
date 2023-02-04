@@ -37,6 +37,11 @@ public class SlideController {
         return lift.isBusy();
     }
 
+    public void stop(){
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift.setPower(0.0);
+    }
+
 
     // simplified motor interface
     public void lift(String position) { lift(position, false); }
