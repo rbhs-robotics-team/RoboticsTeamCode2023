@@ -22,10 +22,10 @@ public class Camera {
         sleeveDetection = new SleeveDetection();
 
         camera.setPipeline(sleeveDetection);
-
+        
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener(){
             @Override public void onOpened(){
-                camera.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                camera.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_LEFT);
                 ready = true;
             }
 

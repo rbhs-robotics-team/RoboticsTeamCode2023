@@ -328,12 +328,16 @@ public class BaseController {
         // sync up with rest of base - acquire control over base motors
         sync();
         
-        // set 'is_turning' to indicate a 'busy' state (however should not matter since this method has control...)
+        // set 'is_turning' to indicate a 'busy' state (however should not matter since this method has full thread control...)
         is_turning = true;
+        
         set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        
+        while(op_mode_is_active()){
+            
+        }    
 
         is_turning = false;
+        set_wheel_power(0.0);
     }
 };
