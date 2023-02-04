@@ -68,9 +68,8 @@ public class Route extends SyncAutoOp2023 {
         } catch(SyncStopped e){
             telemetry.addData("Path", e.getMessage());
             telemetry.update();
+        } finally {
+            shutdown();
         }
-
-        shutdown();
-
     }
 }
