@@ -31,7 +31,7 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
         slide = new SlideController(hardware_map, this, op_mode_is_active_pointer);
         claw = new ClawController(hardware_map, this, op_mode_is_active_pointer);
     }
-
+    
     public void shutdown(){
         base.shutdown();
         slide.shutdown();
