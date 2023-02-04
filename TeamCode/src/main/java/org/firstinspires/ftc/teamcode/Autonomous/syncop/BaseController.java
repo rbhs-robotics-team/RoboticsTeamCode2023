@@ -131,7 +131,16 @@ public class BaseController {
     }
 
     private void sync(){
-        while(op_mode_is_active() && busy()){}
+        while(op_mode_is_active() && busy()){
+            telemetry.addData("Path", "LF{%s} RF{%s} LB{%s} RB{%s}", left_front.isBusy() ? "T" : "F", right_front.isBusy() ? "T" : "F", left_back.isBusy() ? "T" : "F", right_back.isBusy());
+            telemetry.update();
+        }
+        if(!opModeIsActive()){ throw InterruptedException("Stopped in sync"); }
+    }
+
+    public void shutdown(){
+        set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
+        set_wheel_power(0.0);
     }
     
     public void move(double x_tiles, double y_tiles, double power){

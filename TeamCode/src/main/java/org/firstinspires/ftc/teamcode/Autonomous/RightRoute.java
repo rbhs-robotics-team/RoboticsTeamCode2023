@@ -32,38 +32,45 @@ public class RightRoute extends SyncAutoOp2023 {
         waitForStart();
         resetZeroHeading();
 
-        grasp();
-        sync();
+        try {
+            grasp();
+            sync();
 
-        forward(0.2, 0.2);
-        strafe_left(1, 0.2);
-        sync();
+            forward(0.2, 0.2);
+            strafe_left(1, 0.2);
+            sync();
 
-        forward(1, 0.2);
-        lift("max");
-        sync();
+            forward(1, 0.2);
+            lift("max");
+            sync();
 
-        left(0.5);
-        sync();
+            left(0.5);
+            sync();
 
-        forward(0.3, 0.2);
-        sync();
-        lift("max", true);
-        sync();
+            forward(0.3, 0.2);
+            sync();
 
-        open();
-        sync();
-        pause(.5);
-        lift("max");
-        sync();
+            lift("max", true);
+            sync();
 
-        backward(0.3, 0.2);
-        sync();
+            open();
+            sync();
+            pause(.5);
+            lift("max");
+            sync();
 
-        left(.5);
-        lift("min");
-        sync();
+            backward(0.3, 0.2);
+            sync();
 
+            left(0.5);
+            lift("min");
+            sync();
 
+        } catch(InterruptedException exc){
+            telemetry.addData("Path", "Stopped");
+            telemetry.update();
+        }
+
+        shutdown();
     }
 }
