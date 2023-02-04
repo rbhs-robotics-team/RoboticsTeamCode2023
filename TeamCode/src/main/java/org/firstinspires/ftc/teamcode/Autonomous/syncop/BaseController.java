@@ -111,7 +111,7 @@ public class BaseController {
         left_back.setPower(power);
     }
 
-    public void set_right_wheel_power(double spd){
+    public void set_right_wheel_power(double power){
         right_front.setPower(power);
         right_back.setPower(power);
     }
