@@ -22,7 +22,7 @@ public class Route extends SyncAutoOp2023 {
     private Camera camera;
     
     @Override public void runOpMode() throws InterruptedException {
-        initialize(hardwareMap, telemetry);
+        initialize(hardwareMap);
 
         camera = new Camera(hardwareMap,"Webcam 1");
 
