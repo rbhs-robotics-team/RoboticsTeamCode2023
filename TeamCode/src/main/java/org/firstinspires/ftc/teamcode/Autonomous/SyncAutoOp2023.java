@@ -48,6 +48,8 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
             telemetry.addData("Path", "Base{%s} Slide{%s} Claw{%s}", base.busy() ? "T" : "F", slide.busy() ? "T" : "F", claw.busy() ? "T" : "F");
             telemetry.update();
         }
+
+        if(!opModeIsActive()){ throw InterruptedException("Stopped in sync"); }
     }
 
     public void resetZeroHeading() { base.resetZeroHeading(); }

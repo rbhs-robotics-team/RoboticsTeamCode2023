@@ -31,39 +31,45 @@ public class Route extends SyncAutoOp2023 {
         waitForStart();
         resetZeroHeading();
 
-        grasp();
-        sync();
+        try {
+            grasp();
+            sync();
 
-        forward(0.2, 0.2);
-        strafe_left(1, 0.2);
-        sync();
+            forward(0.2, 0.2);
+            strafe_left(1, 0.2);
+            sync();
 
-        forward(1, 0.2);
-        lift("max");
-        sync();
+            forward(1, 0.2);
+            lift("max");
+            sync();
 
-        left(0.5);
-        sync();
+            left(0.5);
+            sync();
 
-        forward(0.3, 0.2);
-        sync();
-        
-        lift("max", true);
-        sync();
+            forward(0.3, 0.2);
+            sync();
+            
+            lift("max", true);
+            sync();
 
-        open();
-        sync();
-        pause(.5);
-        lift("max");
-        sync();
+            open();
+            sync();
+            pause(.5);
+            lift("max");
+            sync();
 
-        backward(0.3, 0.2);
-        sync();
+            backward(0.3, 0.2);
+            sync();
 
-        right(0.5);
-        lift("min");
-        sync();
+            right(0.5);
+            lift("min");
+            sync();
 
-        stop();
+        } catch(InterruptedException exc){
+            telemetry.addData("Path", "Stopped");
+            telemetry.update();
+        }
+
+        shutdown();
     }
 }
