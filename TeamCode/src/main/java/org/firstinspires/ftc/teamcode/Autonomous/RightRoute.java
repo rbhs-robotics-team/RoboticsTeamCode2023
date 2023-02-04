@@ -16,12 +16,13 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Route", group="Test")
-public class Route extends SyncAutoOp2023 {
+@Autonomous(name="25pt: Right Placement", group="Autonomous")
+public class RightRoute extends SyncAutoOp2023 {
 
     private Camera camera;
     
-    @Override public void runOpMode() throws InterruptedException {
+    @Override
+    public void runOpMode() throws InterruptedException {
         initialize(hardwareMap, telemetry);
 
         camera = new Camera(hardwareMap,"Webcam 1");
@@ -59,8 +60,10 @@ public class Route extends SyncAutoOp2023 {
         backward(0.3, 0.2);
         sync();
 
-        right(0.5);
+        left(.5);
         lift("min");
         sync();
+
+
     }
 }

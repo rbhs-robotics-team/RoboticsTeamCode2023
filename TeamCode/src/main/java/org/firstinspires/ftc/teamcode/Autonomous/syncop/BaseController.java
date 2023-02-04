@@ -244,7 +244,7 @@ public class BaseController {
         }
         stopWheels();
         runtime.reset();
-        zero_heading = (zero_heading + 90.0) % 360.0;
+        zero_heading = (zero_heading + 90.0*quarters) % 360.0;
     }
 
     public void right_gyro(double quarters){
@@ -283,7 +283,7 @@ public class BaseController {
         
         stopWheels();
         runtime.reset();
-        zero_heading = (zero_heading - 90.0) % 360.0;
+        zero_heading = (zero_heading + 360 - 90*quarters) % 360.0;
     }
 
     public void turnZero(double margin, String name){
