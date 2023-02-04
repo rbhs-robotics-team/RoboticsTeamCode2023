@@ -29,23 +29,31 @@ public class Route extends SyncAutoOp2023 {
         camera.capture();
 
         waitForStart();
+
         grasp();
         sync();
+        
         forward(0.2, 0.2);
         strafe_left(1, 0.2);
         sync();
+        
         forward(1, 0.2);
         lift("max");
         sync();
+        
         left(0.5);
         sync();
+        
         forward(0.3, 0.2);
         sync();
+        
         open();
         sync();
+        
         pause(1);
         backward(0.3, 0.2);
         sync();
+        
         right(0.5);
         lift("min");
         sync();
