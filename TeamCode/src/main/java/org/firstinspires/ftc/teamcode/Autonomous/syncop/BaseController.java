@@ -33,7 +33,7 @@ public class BaseController {
     protected double zero_heading = 0.0;
     private Orientation angles = null;
     private double margin = 1; // Margin of error for gyrometer based rotation
-    protected double wheelPower = 0.8; // Wheel speed used for gyrometer based rotation
+    protected double wheelPower = 0.3; // Wheel speed used for gyrometer based rotation
 
     // runtime (used for rotation)
     protected ElapsedTime runtime = new ElapsedTime();
@@ -244,7 +244,7 @@ public class BaseController {
         }
         stopWheels();
         runtime.reset();
-        zero_heading = (zero_heading + 90.0) % 360.0;
+        zero_heading = (zero_heading + 90.0*quarters) % 360.0;
     }
 
     public void right_gyro(double quarters){
@@ -283,7 +283,7 @@ public class BaseController {
         
         stopWheels();
         runtime.reset();
-        zero_heading = (zero_heading - 90.0) % 360.0;
+        zero_heading = (zero_heading + 360 - 90.0*quarters) % 360.0;
     }
 
     public void turnZero(double margin, String name){

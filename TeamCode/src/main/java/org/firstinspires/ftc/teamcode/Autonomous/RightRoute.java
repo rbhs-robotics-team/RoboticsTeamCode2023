@@ -16,17 +16,25 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Route", group="Test")
-public class Route extends SyncAutoOp2023 {
+@Autonomous(name="25pt: Right Placement", group="Autonomous")
+public class RightRoute extends SyncAutoOp2023 {
 
     private Camera camera;
+
+    private SleeveDetection.ParkingPosition position = null;
     
     @Override public void runOpMode() throws InterruptedException {
         initialize(hardwareMap, telemetry);
 
         camera = new Camera(hardwareMap,"Webcam 1");
 
+        while (!isStarted()) {
+            camera.capture();
+            telemetry_.addData("ROTATION: ", camera.read());
+            telemetry_.update();
+        }
         camera.capture();
+        position = camera.read();
 
         waitForStart();
         resetZeroHeading();
@@ -45,7 +53,7 @@ public class Route extends SyncAutoOp2023 {
         left(0.5);
         sync();
 
-        forward(0.3, 0.2);
+        forward(0.31, 0.1);
         sync();
         lift("max", true);
         sync();
@@ -56,11 +64,19 @@ public class Route extends SyncAutoOp2023 {
         lift("max");
         sync();
 
-        backward(0.3, 0.2);
+        backward(0.31, 0.1);
         sync();
 
-        right(0.5);
+        left(.5);
         lift("min");
         sync();
+
+        if(position.equals(SleeveDetection.ParkingPosition.RIGHT)) {
+            backward(2, 0.2);
+        } else if(position.equals(SleeveDetection.ParkingPosition.CENTER)) {
+            backward(1, 0.2);
+        }
+        sync();
+        stop();
     }
 }

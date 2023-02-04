@@ -20,10 +20,10 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
     private ClawController claw = null;
 
     protected ElapsedTime runtime = new ElapsedTime();
-    public Telemetry telemetry = null;
+    public Telemetry telemetry_ = null;
 
     public void initialize(HardwareMap hardware_map, Telemetry telemetry){
-        this.telemetry = telemetry;
+        this.telemetry_ = telemetry;
 
         Function<Boolean, Boolean> op_mode_is_active_pointer = (Boolean x) -> opModeIsActive();
 

@@ -40,7 +40,9 @@ public class ClawController {
 
         // set initial position
         claw.setTargetPosition(0);
-        claw.setPower(0.1);
+        claw.setPower(0.3);
+
+        claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // save telemetry and opmode pointer
         this.telemetry = opMode.telemetry;
@@ -58,20 +60,14 @@ public class ClawController {
     public void grasp(){
         is_open = false;
 
-        claw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        claw.setPower(-0.35);
+        claw.setTargetPosition(-60);
+        claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void open(boolean wide){
         is_open = true;
 
-        int pos = 5;
-
-        pos += wide ? 5 : 0;
-        
-        claw.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        
-        claw.setTargetPosition(pos);
-        claw.setPower(0.5);
+        claw.setTargetPosition(-80);
+        claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
