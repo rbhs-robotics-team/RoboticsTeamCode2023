@@ -37,10 +37,11 @@ public class ClawController {
         claw.setDirection(DcMotor.Direction.FORWARD);
         claw.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         claw.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        claw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // set initial position
         claw.setTargetPosition(0);
-        claw.setPower(0.3);
+        claw.setPower(1);
 
         claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -60,14 +61,16 @@ public class ClawController {
     public void grasp(){
         is_open = false;
 
-        claw.setTargetPosition(-60);
+        claw.setPower(1);
+        claw.setTargetPosition(-80);
         claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void open(boolean wide){
         is_open = true;
 
-        claw.setTargetPosition(-80);
+        claw.setPower(1);
+        claw.setTargetPosition(0);
         claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
