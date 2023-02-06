@@ -120,14 +120,6 @@ public class BaseController {
         right_back.setPower(power);
     }
 
-    public void pause(double seconds){
-        runtime.reset();
-        while(op_mode_is_active() && (runtime.seconds() < seconds)){
-            telemetry.addData("Waiting", "%2.5f / %2.5f", runtime.seconds(), seconds);
-            telemetry.update();
-        }
-    }
-
     public boolean busy(){
         return is_turning || left_front.isBusy() || right_front.isBusy() || left_back.isBusy() || right_back.isBusy();
     }
@@ -146,8 +138,8 @@ public class BaseController {
     }
     
     public void move(double x_tiles, double y_tiles, double power){
-        /** note that while it is possible to vastly increase complexity to avoid syncing here, for now it does not seem worth it **/
-        sync(); // prevent multiple base commands from being executed out of order
+        //prevent multiple base commands from being executed out of order
+        sync();
         
         set_wheel_mode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -159,15 +151,6 @@ public class BaseController {
         set_wheel_power(power);
 
         set_wheel_mode(DcMotor.RunMode.RUN_TO_POSITION);
-        
-        /**                         WARNING: is this code needed?? if so, there may be some issues...
-        leftfront.setPower(0.0);
-        leftback.setPower(0.0);
-        rightfront.setPower(0.0);
-        rightback.setPower(0.0);
-        
-        set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER); // clean up... maybe
-        **/
     }
 
     public void move(double x_tiles, double y_tiles){
@@ -313,7 +296,32 @@ public class BaseController {
         turnZero(5.0);
     }
 
-    public void turn(double quarters, double power, int stages){
+    // unified turning
+    private double normalize_angle(double angle){
+        return ((angle % 360) + 360) % 360;
+    }
+
+    private static double angular_distance(double a, double b){
+        double counter = (a > b) ? a - b : b - a;
+        double clock = 360 - counter;
+        return Math.min(counter, clock);
+    }
+
+    private double get_angle(){
+        return normalize_angle(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+    }
+
+    // blocking pause
+    private void pause(double seconds){
+        runtime.reset();
+        while(op_mode_is_active() && (runtime.seconds() < seconds)){
+            telemetry.addData("Waiting", "%2.5f / %2.5f", runtime.seconds(), seconds);
+            telemetry.update();
+        }
+    }
+
+    // blocking turn
+    public void turn(double quarters, double power, int stages, boolean wait, double multiplier){
         // manage invalid parameters
         if(power == 0.0){
             telemetry.addData("Path", "Attempted to turn with zero power");
@@ -323,6 +331,10 @@ public class BaseController {
             telemetry.addData("Path", "Attempted to turn in zero stages");
             telemetry.update();
             throw new SyncError("Attempted to turn in zero stages");
+        } else if(multiplier > 1.0){
+            telemetry.addData("Path", "Attempted to turn with a multiplier greater than one");
+            telemetry.update();
+            throw new SyncError("Turning multiplier must be less than one");
         }
         
         // sync up with rest of base - acquire control over base motors
@@ -330,14 +342,44 @@ public class BaseController {
         
         // set 'is_turning' to indicate a 'busy' state (however should not matter since this method has full thread control...)
         is_turning = true;
-        
-        set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        while(op_mode_is_active()){
+        // find goal angle
+        double current_angle = get_angle();
+        double target = normalize_angle(current_angle + 90 * quarters);
+
+        if(current_angle == target){ return; } // early exit
+
+        // decide to go clockwise or counter-clocksise
+        boolean clockwise = angular_distance(current_angle, target) <= (current_angle - target);
+
+        set_left_wheel_power(power * (clockwise ? 1 : -1));
+        set_left_wheel_power(power * (clockwise ? -1 : 1));
+
+        // execute
+        set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
+        
+        for(int i = 0; op_mode_is_active() && i < stages; ++i){
+            while(op_mode_is_active() && (clockwise ? (get_angle() > angle) : (get_angle() < angle))){
+                telemetry.addData("Path", "Clockwise{%s} Power{%f}", clockwise ? "T" : "F", power);
+            }
+
+            clockwise = !clockwise;
             
-        }    
+            power *= multiplier;
+
+            set_left_wheel_power(power * (clockwise ? 1 : -1));
+            set_left_wheel_power(power * (clockwise ? -1 : 1));
+
+            if(wait){ pause(0.05); }
+        }
+        
+        set_wheel_power(0.0);
 
         is_turning = false;
-        set_wheel_power(0.0);
     }
+
+    public void turn(double quarters, double power, int stages, boolean wait){ turn(quarters, power, stages, wait, 0.5); }
+    public void turn(double quarters, double power, int stages){ turn(quarters, power, stages, true, 0.5); }
+    public void turn(double quarters, double power){ turn(quarters, power, 2, true, 0.5); }
+    public void turn(double quarters){ turn(quarters, default_power, 2, true, 0.5); }
 };
