@@ -38,8 +38,6 @@ public class BaseController {
     // runtime (used for rotation)
     protected ElapsedTime runtime = new ElapsedTime();
 
-    private boolean is_turning = false;
-
     // external logging
     protected Telemetry telemetry = null;
     protected LinearOpMode autoOp = null;
@@ -121,7 +119,7 @@ public class BaseController {
     }
 
     public boolean busy(){
-        return is_turning || left_front.isBusy() || right_front.isBusy() || left_back.isBusy() || right_back.isBusy();
+        return left_front.isBusy() || right_front.isBusy() || left_back.isBusy() || right_back.isBusy();
     }
 
     private void sync(){
@@ -339,9 +337,6 @@ public class BaseController {
         
         // sync up with rest of base - acquire control over base motors
         sync();
-        
-        // set 'is_turning' to indicate a 'busy' state (however should not matter since this method has full thread control...)
-        is_turning = true;
 
         // find goal angle
         double current_angle = get_angle();
@@ -374,8 +369,6 @@ public class BaseController {
         }
         
         set_wheel_power(0.0);
-
-        is_turning = false;
     }
 
     public void turn(double quarters, double power, int stages, boolean wait){ turn(quarters, power, stages, wait, 0.5); }
