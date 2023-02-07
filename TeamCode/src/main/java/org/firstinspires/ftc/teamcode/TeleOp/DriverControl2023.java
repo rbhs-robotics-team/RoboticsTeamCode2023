@@ -113,7 +113,7 @@ public class DriverControl2023 extends LinearOpMode {
         rightDrive_0.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive_1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        claw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set zero power behavior to brake
         leftDrive_0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -130,10 +130,13 @@ public class DriverControl2023 extends LinearOpMode {
         double actLF=0.0, actLB=0.0, actRF=0.0, actRB=0.0;  // current wheel speeds
         double delta = 0.15; // acceleration (power change per iteration -> lower number=larger acceleration)
         int liftPosition = 0; //current position of lift
-        double clawPosition = 0; // current position of claw
+        int clawPosition = 0; // current position of claw
 
-        boolean clawAlt = false;
-        boolean armAlt = false;
+        boolean clawAlt = true;
+        boolean liftAlt = false;
+        double altDelayLength = 2;
+        ElapsedTime altDelayLift = new ElapsedTime();
+        ElapsedTime altDelayClaw = new ElapsedTime();
 
         // Gyro Config
         BNO055IMU.Parameters params = new BNO055IMU.Parameters();
@@ -264,43 +267,56 @@ public class DriverControl2023 extends LinearOpMode {
             telemetry.addData("Wheels", "leftFront=(%.2f), leftBack=(%.2f), rightFront=(%.2f), rightBack=(%.2f)", actLF, actLB, actRF, actRB);
             telemetry.addData("Heading", "Z %2.3f, Y %2.3f", getAngle(), (angles.secondAngle-zero_y+360)%360.0);
 
+            // Lift alternate mode
+            if(gamepad2.y & altDelayLift.seconds()>altDelayLength) {
+                liftAlt = !liftAlt;
+                altDelayLift.reset();
+            }
+            if(liftAlt) {
 
-            // Lift
-            if(gamepad2.right_trigger>0) {
-                lift.setTargetPosition(3200);
-                lift.setPower(gamepad2.right_trigger);
-                liftPosition = lift.getCurrentPosition()+(int)(gamepad2.right_trigger*30);
-            }
-            else if(gamepad2.left_trigger>0) {
-                lift.setTargetPosition(0);
-                lift.setPower(gamepad2.left_trigger);
-                liftPosition = lift.getCurrentPosition()-(int)(gamepad2.right_trigger*50);
-            }
-            else if(gamepad2.left_stick_y<0) {
-                lift.setTargetPosition(3200);
-                lift.setPower(Math.abs(gamepad2.left_stick_y));
-                liftPosition = lift.getCurrentPosition()+(int)(-gamepad2.left_stick_y*30);
-            }
-            else if(gamepad2.left_stick_y>0) {
-                lift.setTargetPosition(0);
-                lift.setPower(Math.abs(gamepad2.left_stick_y));
-                liftPosition = lift.getCurrentPosition()-(int)(-gamepad2.left_stick_y*50);
             }
             else {
-                lift.setTargetPosition(liftPosition);
-                lift.setPower(1);
+                if (gamepad2.right_trigger > 0) {
+                    lift.setTargetPosition(3200);
+                    lift.setPower(gamepad2.right_trigger);
+                    liftPosition = lift.getCurrentPosition() + (int) (gamepad2.right_trigger * 30);
+                } else if (gamepad2.left_trigger > 0) {
+                    lift.setTargetPosition(0);
+                    lift.setPower(gamepad2.left_trigger);
+                    liftPosition = lift.getCurrentPosition() - (int) (gamepad2.right_trigger * 50);
+                } else if (gamepad2.left_stick_y < 0) {
+                    lift.setTargetPosition(3200);
+                    lift.setPower(Math.abs(gamepad2.left_stick_y));
+                    liftPosition = lift.getCurrentPosition() + (int) (-gamepad2.left_stick_y * 30);
+                } else if (gamepad2.left_stick_y > 0) {
+                    lift.setTargetPosition(0);
+                    lift.setPower(Math.abs(gamepad2.left_stick_y));
+                    liftPosition = lift.getCurrentPosition() - (int) (-gamepad2.left_stick_y * 50);
+                } else {
+                    lift.setTargetPosition(liftPosition);
+                    lift.setPower(1);
+                }
             }
 
             telemetry.addData("Lift", "position=(%3.0f)", (double) lift.getCurrentPosition());
 
             // Claw alternate mode
-            if(gamepad2.x) {
+            if(gamepad2.x & altDelayClaw.seconds()>altDelayLength) {
                 clawAlt = !clawAlt;
+                altDelayClaw.reset();
             }
             // Claw
-            if(!clawAlt) {
-
+            if(clawAlt) {
+                if (gamepad2.right_bumper) {
+                    claw.setPower(100);
+                    claw.setTargetPosition(0);
+                } else if (gamepad2.left_bumper) {
+                    claw.setPower(100);
+                    claw.setTargetPosition(-80);
+                }
+                claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             } else {
+                claw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 if (gamepad2.right_bumper) {
                     claw.setPower(.35);
                 } else if (gamepad2.left_bumper) {
@@ -309,6 +325,7 @@ public class DriverControl2023 extends LinearOpMode {
                     claw.setPower(0);
                 }
             }
+            telemetry.addData("Claw", "position=(%3.0f)", (double) claw.getCurrentPosition());
 
 
 
