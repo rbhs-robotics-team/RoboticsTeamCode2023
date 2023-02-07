@@ -33,7 +33,7 @@ public class BaseController {
     protected double zero_heading = 0.0;
     private Orientation angles = null;
     private double margin = 1; // Margin of error for gyrometer based rotation
-    protected double wheelPower = 0.8; // Wheel speed used for gyrometer based rotation
+    protected double wheelPower = 0.3; // Wheel speed used for gyrometer based rotation
 
     // runtime (used for rotation)
     protected ElapsedTime runtime = new ElapsedTime();
@@ -179,7 +179,7 @@ public class BaseController {
     }
 
     public void strafe_left(double tiles){ strafe_left(tiles, default_power); }
-
+    
     /** Gyrometer Access **/
     public double getAngle(){
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -270,28 +270,7 @@ public class BaseController {
         
         set_wheel_power(0.0);
         runtime.reset();
-        zero_heading = (zero_heading + 360 - 90*quarters) % 360.0;
-    }
-
-    public void turnZero(double margin, String name){
-        double a = getSmAngle();
-        runtime.reset();
-        while(Math.abs(a) > margin){
-            set_left_wheel_power(a*0.005);
-            set_right_wheel_power(-a*0.005);
-            telemetry.addData("Path", "%s: %2.5f S Elapsed, %2.3", name, a, runtime.seconds());
-            telemetry.update();
-            a = getSmAngle();
-        }
-        set_wheel_power(0.0);
-    }
-    
-    public void turnZero(double margin){
-        turnZero(margin, "Turning");
-    }
-
-    public void turnZero(){
-        turnZero(5.0);
+        zero_heading = (zero_heading + 360 - 90.0*quarters) % 360.0;
     }
 
     // unified turning

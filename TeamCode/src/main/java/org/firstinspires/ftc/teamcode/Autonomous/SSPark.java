@@ -7,7 +7,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@Autonomous(name = "Old SS")
+@Autonomous(name = "20pt: Signal Sleeve", group="Autonomous")
 public class SSPark extends AutoOp2023 {
 
     private SleeveDetection sleeveDetection;
@@ -38,14 +38,14 @@ public class SSPark extends AutoOp2023 {
 
         while (!isStarted()) {
 
-            telemetry.addData("ROTATION: ", sleeveDetection.getPosition());
-            telemetry.update();
+            telemetry_.addData("ROTATION: ", sleeveDetection.getPosition());
+            telemetry_.update();
         }
         
         waitForStart();
         SleeveDetection.ParkingPosition position = sleeveDetection.getPosition();
-        telemetry.addData("Position", position);
-        telemetry.update();
+        telemetry_.addData("Position", position);
+        telemetry_.update();
         forward(1.2, 0.2);
         if(position.equals(SleeveDetection.ParkingPosition.LEFT)) {
             strafeLeft(1.3, 0.2);

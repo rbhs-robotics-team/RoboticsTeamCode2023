@@ -31,7 +31,7 @@ public abstract class AutoOp2023 extends LinearOpMode {
     private Orientation angles = null;
 
     protected ElapsedTime runtime = new ElapsedTime();
-    protected Telemetry telemetry = null;
+    protected Telemetry telemetry_ = null;
 
     private double fbMod = 0.49; // Distance modifier for encoder based forward and backward functions
     private double strafeMod = 0.58; // Distance modifier for encoder based strafing functions
@@ -59,7 +59,7 @@ public abstract class AutoOp2023 extends LinearOpMode {
         rightback.setDirection(DcMotor.Direction.FORWARD);
         lift.setDirection(DcMotor.Direction.FORWARD);
         claw.setDirection(DcMotor.Direction.FORWARD);
-        this.telemetry = telemetry;
+        this.telemetry_ = telemetry;
         BNO055IMU.Parameters params = new BNO055IMU.Parameters();
         params.mode = BNO055IMU.SensorMode.IMU;
         params.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -142,8 +142,8 @@ public abstract class AutoOp2023 extends LinearOpMode {
         rightback.setPower(wheelPower);
         runtime.reset();
         while(opModeIsActive() && (leftfront.isBusy() || rightfront.isBusy() || leftback.isBusy() || rightback.isBusy()) && runtime.seconds() < Math.sqrt(y_tiles*y_tiles+x_tiles*x_tiles)*quitSpeed/wheelPower){
-            telemetry.addData("Path", "%s: %s lf, %s rf, %s lb, %s rb", name, leftfront.getCurrentPosition(), rightfront.getCurrentPosition(), leftback.getCurrentPosition(), rightback.getCurrentPosition());
-            telemetry.update();
+            telemetry_.addData("Path", "%s: %s lf, %s rf, %s lb, %s rb", name, leftfront.getCurrentPosition(), rightfront.getCurrentPosition(), leftback.getCurrentPosition(), rightback.getCurrentPosition());
+            telemetry_.update();
         }
         leftfront.setPower(0.0);
         leftback.setPower(0.0);
@@ -228,19 +228,19 @@ public abstract class AutoOp2023 extends LinearOpMode {
         rightWheels(wheelPower);
         runtime.reset();
         while(opModeIsActive() && ((a=getAngle()) > 90*quarters+margin)){
-            telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
-            telemetry.update();
+            telemetry_.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry_.update();
         }
         pause(0.05);
         while(opModeIsActive() && ((a=getAngle()) < 90*quarters+margin)){
-            telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
-            telemetry.update();
+            telemetry_.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry_.update();
         }
         leftWheels(wheelPower*0.2);
         rightWheels(-wheelPower*0.2);
         while(opModeIsActive() && ((a=getAngle()) > 90*quarters+margin)){
-            telemetry.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
-            telemetry.update();
+            telemetry_.addData("Path", "Turning Left: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry_.update();
         }
         stopWheels();
         runtime.reset();
@@ -256,19 +256,19 @@ public abstract class AutoOp2023 extends LinearOpMode {
         rightWheels(-wheelPower);
         runtime.reset();
         while(opModeIsActive() && ((a=getNegAngle()%360) < -90*quarters-margin)){
-            telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
-            telemetry.update();
+            telemetry_.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry_.update();
         }
         pause(0.05);
         while(opModeIsActive() && ((a=getNegAngle()) > -90*quarters-margin)){
-            telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
-            telemetry.update();
+            telemetry_.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry_.update();
         }
         leftWheels(-wheelPower*0.2);
         rightWheels(wheelPower*0.2);
         while(opModeIsActive() && ((a=getNegAngle()) < -90*quarters-margin)){
-            telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
-            telemetry.update();
+            telemetry_.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), a);
+            telemetry_.update();
         }
         stopWheels();
         runtime.reset();
@@ -280,8 +280,8 @@ public abstract class AutoOp2023 extends LinearOpMode {
         while(Math.abs(a) > margin){
             leftWheels(a*0.005);
             rightWheels(-a*0.005);
-            telemetry.addData("Path", "%s: %2.5f S Elapsed, %2.3", name, a, runtime.seconds());
-            telemetry.update();
+            telemetry_.addData("Path", "%s: %2.5f S Elapsed, %2.3", name, a, runtime.seconds());
+            telemetry_.update();
             a = getSmAngle();
         }
         stopWheels();
@@ -301,7 +301,7 @@ public abstract class AutoOp2023 extends LinearOpMode {
         strafeLeftSpd(wheelPower);
         runtime.reset();
         while(opModeIsActive() && (runtime.seconds() < tiles * strafeSpd / wheelPower)){
-            telemetry.addData("Path", "Strafing Left: %2.5f S Elapsed", runtime.seconds());
+            telemetry_.addData("Path", "Strafing Left: %2.5f S Elapsed", runtime.seconds());
             strafeLeftSpd(wheelPower, getSmAngle()*turningCorrection);
         }
         stopWheels();
@@ -312,7 +312,7 @@ public abstract class AutoOp2023 extends LinearOpMode {
         strafeRightSpd(wheelPower);
         runtime.reset();
         while(opModeIsActive() && (runtime.seconds() < tiles * strafeSpd / wheelPower)){
-            telemetry.addData("Path", "Strafing Right: %2.5f S Elapsed", runtime.seconds());
+            telemetry_.addData("Path", "Strafing Right: %2.5f S Elapsed", runtime.seconds());
             strafeRightSpd(wheelPower, getSmAngle()*turningCorrection);
         }
         stopWheels();
@@ -323,8 +323,8 @@ public abstract class AutoOp2023 extends LinearOpMode {
         rightWheels(wheelPower);
         runtime.reset();
         while(opModeIsActive() && (runtime.seconds() < tiles * speed / wheelPower)){
-            telemetry.addData("Path", "Forward: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
+            telemetry_.addData("Path", "Forward: %2.5f S Elapsed", runtime.seconds());
+            telemetry_.update();
         }
         stopWheels();
     }
@@ -334,8 +334,8 @@ public abstract class AutoOp2023 extends LinearOpMode {
         rightWheels(-wheelPower);
         runtime.reset();
         while(opModeIsActive() && (runtime.seconds() < tiles * speed / wheelPower)){
-            telemetry.addData("Path", "Backward: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
+            telemetry_.addData("Path", "Backward: %2.5f S Elapsed", runtime.seconds());
+            telemetry_.update();
         }
         stopWheels();
     }
@@ -345,8 +345,8 @@ public abstract class AutoOp2023 extends LinearOpMode {
         rightWheels(wheelPower);
         runtime.reset();
         while(opModeIsActive() && (runtime.seconds() < quarters * turn90 / wheelPower)){
-            telemetry.addData("Path", "Turning Left: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
+            telemetry_.addData("Path", "Turning Left: %2.5f S Elapsed", runtime.seconds());
+            telemetry_.update();
         }
         stopWheels();
     }
@@ -356,8 +356,8 @@ public abstract class AutoOp2023 extends LinearOpMode {
         rightWheels(-wheelPower);
         runtime.reset();
         while(opModeIsActive() && (runtime.seconds() < quarters * turn90 / wheelPower)){
-            telemetry.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), getAngle());
-            telemetry.update();
+            telemetry_.addData("Path", "Turning Right: %2.5f S Elapsed, %2.3f deg", runtime.seconds(), getAngle());
+            telemetry_.update();
         }
         stopWheels();
     }
@@ -424,8 +424,8 @@ public abstract class AutoOp2023 extends LinearOpMode {
         arm.setPower(armStatic+armPower);
         runtime.reset();
         while(opModeIsActive() && (runtime.seconds() < pct)){
-            telemetry.addData("Path", "Raising arm: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
+            telemetry_.addData("Path", "Raising arm: %2.5f S Elapsed", runtime.seconds());
+            telemetry_.update();
         }
         arm.setPower(armStatic);
     }
@@ -489,8 +489,8 @@ public abstract class AutoOp2023 extends LinearOpMode {
         //lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift.setPower(0.5);
         while(opModeIsActive() && lift.isBusy()) {
-            telemetry.addData("Lift", lift.getCurrentPosition());
-            telemetry.update();
+            telemetry_.addData("Lift", lift.getCurrentPosition());
+            telemetry_.update();
         }
         //lift.setPower(armStatic);
         //lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -502,16 +502,16 @@ public abstract class AutoOp2023 extends LinearOpMode {
         claw.setPosition(1);
         runtime.reset();
         while(opModeIsActive() && runtime.seconds() < 0.5){
-            telemetry.addData("Path", "Opening Claw: %2.3f S elapsed", runtime.seconds());
-            telemetry.update();
+            telemetry_.addData("Path", "Opening Claw: %2.3f S elapsed", runtime.seconds());
+            telemetry_.update();
         }
     }
     public void closeClaw(){
         claw.setPosition(0);
         runtime.reset();
         while(opModeIsActive() && runtime.seconds() < 0.5){
-            telemetry.addData("Path", "Closing Claw: %2.3f S elapsed", runtime.seconds());
-            telemetry.update();
+            telemetry_.addData("Path", "Closing Claw: %2.3f S elapsed", runtime.seconds());
+            telemetry_.update();
         }
     }
   */
@@ -521,16 +521,16 @@ public abstract class AutoOp2023 extends LinearOpMode {
     public void pause(double seconds){
         runtime.reset();
         while(opModeIsActive() && (runtime.seconds() < seconds)){
-            telemetry.addData("Waiting", "%2.5f / %2.5f", runtime.seconds(), seconds);
-            telemetry.update();
+            telemetry_.addData("Waiting", "%2.5f / %2.5f", runtime.seconds(), seconds);
+            telemetry_.update();
         }
     }
     public void pause(double seconds, boolean telem){
         runtime.reset();
         while(opModeIsActive() && (runtime.seconds() < seconds)){
             if(telem) {
-                telemetry.addData("Waiting", "%2.5f / %2.5f", runtime.seconds(), seconds);
-                telemetry.update();
+                telemetry_.addData("Waiting", "%2.5f / %2.5f", runtime.seconds(), seconds);
+                telemetry_.update();
             }
         }
     }
