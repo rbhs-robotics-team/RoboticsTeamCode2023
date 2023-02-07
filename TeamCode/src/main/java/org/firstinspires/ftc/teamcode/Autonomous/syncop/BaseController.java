@@ -38,8 +38,6 @@ public class BaseController {
     // runtime (used for rotation)
     protected ElapsedTime runtime = new ElapsedTime();
 
-    private boolean is_turning = false;
-
     // external logging
     protected Telemetry telemetry = null;
     protected LinearOpMode autoOp = null;
@@ -121,7 +119,8 @@ public class BaseController {
     }
 
     public boolean busy(){
-        return is_turning || left_front.isBusy() || right_front.isBusy() || left_back.isBusy() || right_back.isBusy();
+        // note: will return false if turning (turning is a blocking operation)
+        return left_front.isBusy() || right_front.isBusy() || left_back.isBusy() || right_back.isBusy();
     }
 
     private void sync(){
@@ -181,7 +180,7 @@ public class BaseController {
     }
 
     public void strafe_left(double tiles){ strafe_left(tiles, default_power); }
-
+    
     /** Gyrometer Access **/
     public double getAngle(){
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -275,27 +274,6 @@ public class BaseController {
         zero_heading = (zero_heading + 360 - 90.0*quarters) % 360.0;
     }
 
-    public void turnZero(double margin, String name){
-        double a = getSmAngle();
-        runtime.reset();
-        while(Math.abs(a) > margin){
-            set_left_wheel_power(a*0.005);
-            set_right_wheel_power(-a*0.005);
-            telemetry.addData("Path", "%s: %2.5f S Elapsed, %2.3", name, a, runtime.seconds());
-            telemetry.update();
-            a = getSmAngle();
-        }
-        set_wheel_power(0.0);
-    }
-    
-    public void turnZero(double margin){
-        turnZero(margin, "Turning");
-    }
-
-    public void turnZero(){
-        turnZero(5.0);
-    }
-
     // unified turning
     private double normalize_angle(double angle){
         return ((angle % 360) + 360) % 360;
@@ -340,9 +318,6 @@ public class BaseController {
         // sync up with rest of base - acquire control over base motors
         sync();
         
-        // set 'is_turning' to indicate a 'busy' state (however should not matter since this method has full thread control...)
-        is_turning = true;
-
         // find goal angle
         double current_angle = get_angle();
         double target = normalize_angle(current_angle + 90 * quarters);
@@ -374,8 +349,6 @@ public class BaseController {
         }
         
         set_wheel_power(0.0);
-
-        is_turning = false;
     }
 
     public void turn(double quarters, double power, int stages, boolean wait){ turn(quarters, power, stages, wait, 0.5); }
