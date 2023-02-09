@@ -1,14 +1,16 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Autonomous.old;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="25pt: Right Placement", group="Autonomous")
-public class RightRoute extends SyncAutoOp2023 {
+import org.firstinspires.ftc.teamcode.Autonomous.SyncAutoOp2023;
+
+@Autonomous(name="25pt: Left Placement", group="Autonomous")
+public class LeftRoute extends SyncAutoOp2023 {
 
     private Camera camera;
 
     private SleeveDetection.ParkingPosition position = null;
-    
+
     @Override public void runOpMode() throws InterruptedException {
         initialize(hardwareMap, telemetry);
 
@@ -23,20 +25,19 @@ public class RightRoute extends SyncAutoOp2023 {
         position = camera.read();
 
         waitForStart();
-        resetZeroHeading();
 
         grasp();
         sync();
 
         forward(0.1, 0.2);
-        strafe_left(1, 0.2);
+        strafe_right(1, 0.2);
         sync();
 
         forward(1, 0.2);
         lift("max");
         sync();
 
-        left(0.5);
+        right(0.5);
         sync();
 
         forward(0.35, 0.1);
@@ -53,11 +54,11 @@ public class RightRoute extends SyncAutoOp2023 {
         backward(0.35, 0.1);
         sync();
 
-        left(.5);
+        right(.5);
         sync();
 
         lift("min");
-        if(position.equals(SleeveDetection.ParkingPosition.RIGHT)) {
+        if(position.equals(SleeveDetection.ParkingPosition.LEFT)) {
             backward(2, 0.2);
         } else if(position.equals(SleeveDetection.ParkingPosition.CENTER)) {
             backward(1, 0.2);

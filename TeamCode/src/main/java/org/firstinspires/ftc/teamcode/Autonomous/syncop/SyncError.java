@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous.syncop;
 
-public class SyncError extends Exception {
+public class SyncError extends RuntimeException {
     public SyncError(String message){
         super(message);
     }

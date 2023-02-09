@@ -52,8 +52,6 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
         if(!opModeIsActive()){ throw new SyncStopped("Stopped in sync - global"); }
     }
 
-    public void resetZeroHeading() { base.resetZeroHeading(); }
-
     // component functions
     public void forward(double tiles, double power){ base.forward(tiles, power); }
     public void forward(double tiles){ base.forward(tiles); }
@@ -63,6 +61,12 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
     public void strafe_right(double tiles){ base.strafe_right(tiles); }
     public void strafe_left(double tiles, double power){ base.strafe_left(tiles, power); }
     public void strafe_left(double tiles){ base.strafe_left(tiles); }
+
+    public void turn(double quarters, double power, int stages, boolean wait, double multiplier){ base.turn(quarters, power, stages, wait, multiplier); }
+    public void turn(double quarters, double power, int stages, boolean wait){ turn(quarters, power, stages, wait); }
+    public void turn(double quarters, double power, int stages){ turn(quarters, power, stages); }
+    public void turn(double quarters, double power){ turn(quarters, power); }
+    public void turn(double quarters){ turn(quarters); }
 
     public void right(double angle){ base.right_gyro(angle); }
     public void left(double angle){ base.left_gyro(angle); }

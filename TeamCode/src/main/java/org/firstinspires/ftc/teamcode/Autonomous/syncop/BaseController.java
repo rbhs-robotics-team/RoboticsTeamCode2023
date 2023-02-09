@@ -127,7 +127,7 @@ public class BaseController {
             telemetry.addData("Path", "LF{%s} RF{%s} LB{%s} RB{%s}", left_front.isBusy() ? "T" : "F", right_front.isBusy() ? "T" : "F", left_back.isBusy() ? "T" : "F", right_back.isBusy());
             telemetry.update();
         }
-        if(!opModeIsActive()){ throw new SyncStopped("Stopped in sync - base"); }
+        if(!op_mode_is_active()){ throw new SyncStopped("Stopped in sync - base"); }
     }
 
     public void shutdown(){
@@ -313,6 +313,9 @@ public class BaseController {
             telemetry.update();
             throw new SyncError("Turning multiplier must be less than one");
         }
+
+        telemetry.addData("Path","Starting turn");
+        telemetry.update();
         
         // sync up with rest of base - acquire control over base motors
         sync();
@@ -321,10 +324,16 @@ public class BaseController {
         double current_angle = get_angle();
         double target = normalize_angle(current_angle + 90 * quarters);
 
+        telemetry.addData("Path","Current{%f} Target{%f}", current_angle, target);
+        telemetry.update();
+
         if(current_angle == target){ return; } // early exit
 
         // decide to go clockwise or counter-clocksise
         boolean clockwise = angular_distance(current_angle, target) <= (current_angle - target);
+
+        telemetry.addData("Path","Clockwise{%s}", clockwise ? "T" : "F");
+        telemetry.update();
 
         set_left_wheel_power(power * (clockwise ? 1 : -1));
         set_left_wheel_power(power * (clockwise ? -1 : 1));
@@ -333,8 +342,12 @@ public class BaseController {
         set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
         
         for(int i = 0; op_mode_is_active() && i < stages; ++i){
-            while(op_mode_is_active() && (clockwise ? (get_angle() > angle) : (get_angle() < angle))){
+            telemetry.addData("Path", "Starting stage");
+            telemetry.update();
+
+            while(op_mode_is_active()/* && (clockwise ? (get_angle() < target) : (get_angle() < target))*/){
                 telemetry.addData("Path", "Clockwise{%s} Power{%f}", clockwise ? "T" : "F", power);
+                telemetry.update();
             }
 
             clockwise = !clockwise;
@@ -348,6 +361,9 @@ public class BaseController {
         }
         
         set_wheel_power(0.0);
+
+        telemetry.addData("Path", "End of turn");
+        telemetry.update();
     }
 
     public void turn(double quarters, double power, int stages, boolean wait){ turn(quarters, power, stages, wait, 0.5); }
