@@ -319,6 +319,9 @@ public class BaseController {
         
         // sync up with rest of base - acquire control over base motors
         sync();
+        
+        // set wheel mode
+        set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // find goal angle
         double current_angle = get_angle();
@@ -337,9 +340,6 @@ public class BaseController {
 
         set_left_wheel_power(power * (clockwise ? 1 : -1));
         set_left_wheel_power(power * (clockwise ? -1 : 1));
-
-        // execute
-        set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
         
         for(int i = 0; op_mode_is_active() && i < stages; ++i){
             telemetry.addData("Path", "Starting stage");
