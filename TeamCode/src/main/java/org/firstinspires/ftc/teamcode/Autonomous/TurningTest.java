@@ -18,6 +18,8 @@ public class TurningTest extends SyncAutoOp2023 {
             turn(1.0);
             turn(3.0);
 
+            turn(-1);
+
             sync();
         } catch(SyncError e) {
             telemetry_.addData("Path", e.getMessage());

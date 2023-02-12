@@ -357,7 +357,7 @@ public class BaseController {
             set_left_wheel_power(power * (clockwise ? 1 : -1));
             set_right_wheel_power(power * (clockwise ? -1 : 1));
 
-            if(wait){ pause(0.5); }
+            if(wait){ pause(1); }
         }
         
         set_wheel_power(0.0);
