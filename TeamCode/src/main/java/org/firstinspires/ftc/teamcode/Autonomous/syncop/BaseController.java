@@ -51,7 +51,7 @@ public class BaseController {
     public double forward_backward_tile_mod = 0.49;
     public double strafe_tile_mod = 0.58;
 
-    public double default_power = 1.0;
+    public double default_power = 0.2;
 
     public BaseController (HardwareMap hardware_map, LinearOpMode opMode, Function<Boolean, Boolean> op_mode_is_active_pointer) {
         // link to respective hardware bus
@@ -316,10 +316,10 @@ public class BaseController {
 
         telemetry.addData("Path","Starting turn");
         telemetry.update();
-        
+
         // sync up with rest of base - acquire control over base motors
         sync();
-        
+
         // set wheel mode
         set_wheel_mode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -333,20 +333,20 @@ public class BaseController {
         if(current_angle == target){ return; } // early exit
 
         // decide to go clockwise or counter-clocksise
-        boolean clockwise = angular_distance(current_angle, target) <= (current_angle - target);
+        boolean clockwise = angular_distance(current_angle, target) > (current_angle - target);
 
         telemetry.addData("Path","Clockwise{%s}", clockwise ? "T" : "F");
         telemetry.update();
 
         set_left_wheel_power(power * (clockwise ? 1 : -1));
-        set_left_wheel_power(power * (clockwise ? -1 : 1));
-        
+        set_right_wheel_power(power * (clockwise ? -1 : 1));
+
         for(int i = 0; op_mode_is_active() && i < stages; ++i){
             telemetry.addData("Path", "Starting stage");
             telemetry.update();
 
-            while(op_mode_is_active()/* && (clockwise ? (get_angle() < target) : (get_angle() < target))*/){
-                telemetry.addData("Path", "Clockwise{%s} Power{%f}", clockwise ? "T" : "F", power);
+            while(op_mode_is_active() && (clockwise ? (get_angle() > target) : (get_angle() < target))){
+                telemetry.addData("Path", "Clockwise{%s} Power{%f} Angle{%f} Target{%f}", clockwise ? "T" : "F", power, get_angle(), target);
                 telemetry.update();
             }
 
@@ -355,9 +355,9 @@ public class BaseController {
             power *= multiplier;
 
             set_left_wheel_power(power * (clockwise ? 1 : -1));
-            set_left_wheel_power(power * (clockwise ? -1 : 1));
+            set_right_wheel_power(power * (clockwise ? -1 : 1));
 
-            if(wait){ pause(0.05); }
+            if(wait){ pause(0.5); }
         }
         
         set_wheel_power(0.0);

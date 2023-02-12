@@ -63,10 +63,10 @@ public abstract class SyncAutoOp2023 extends LinearOpMode {
     public void strafe_left(double tiles){ base.strafe_left(tiles); }
 
     public void turn(double quarters, double power, int stages, boolean wait, double multiplier){ base.turn(quarters, power, stages, wait, multiplier); }
-    public void turn(double quarters, double power, int stages, boolean wait){ turn(quarters, power, stages, wait); }
-    public void turn(double quarters, double power, int stages){ turn(quarters, power, stages); }
-    public void turn(double quarters, double power){ turn(quarters, power); }
-    public void turn(double quarters){ turn(quarters); }
+    public void turn(double quarters, double power, int stages, boolean wait){ base.turn(quarters, power, stages, wait); }
+    public void turn(double quarters, double power, int stages){ base.turn(quarters, power, stages); }
+    public void turn(double quarters, double power){ base.turn(quarters, power); }
+    public void turn(double quarters){ base.turn(quarters); }
 
     public void right(double angle){ base.right_gyro(angle); }
     public void left(double angle){ base.left_gyro(angle); }

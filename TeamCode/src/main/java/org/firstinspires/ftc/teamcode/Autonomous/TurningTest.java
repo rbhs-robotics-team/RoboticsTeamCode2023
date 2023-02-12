@@ -15,14 +15,10 @@ public class TurningTest extends SyncAutoOp2023 {
         waitForStart();
 
         try {
-            left(1.0);
-
             turn(1.0);
+            turn(3.0);
 
-            while(opModeIsActive()){
-                telemetry_.addData("Path", "Hey!");
-                telemetry_.update();
-            }
+            sync();
         } catch(SyncError e) {
             telemetry_.addData("Path", e.getMessage());
             telemetry_.update();
