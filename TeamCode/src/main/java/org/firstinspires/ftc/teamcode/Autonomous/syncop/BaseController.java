@@ -274,8 +274,9 @@ public class BaseController {
     }
 
     // unified turning
-    private double normalize_angle(double angle){
-        return ((angle % 360) + 360) % 360;
+    private double normalize_angle(double angle){ // normalize angle from (-180, 180) ! new change needs everything else to be updated
+        angle = ((angle % 360) + 360) % 360;
+        return (angle > 180) ? angle - 360 : angle;
     }
 
     private static double angular_distance(double a, double b){
