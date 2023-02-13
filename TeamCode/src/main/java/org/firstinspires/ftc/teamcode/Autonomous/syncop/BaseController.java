@@ -326,13 +326,15 @@ public class BaseController {
 
         // decide to go clockwise or counter-clocksise
         boolean clockwise = normalize_angle(target - current_angle) > 0;
-        
+
         set_left_wheel_power(power * (clockwise ? 1 : -1));
         set_right_wheel_power(power * (clockwise ? -1 : 1));
 
         for(int i = 0; op_mode_is_active() && i < stages; ++i){
-            while(op_mode_is_active() && (clockwise ? (get_angle() > target) : (get_angle() < target))){
-                telemetry.addData("Path", "Clockwise{%s} Power{%f} Angle{%f} Target{%f}", clockwise ? "T" : "F", power, get_angle(), target);
+            while(op_mode_is_active() && (clockwise ? current_angle < 0 : current_angle > 0)){
+                current_angle = normalize_angle(get_angle() - target);
+                
+                telemetry.addData("Path", "Clockwise{%s} Power{%f} Angle{%f} Target{%f} Adjusted{%f}", clockwise ? "T" : "F", power, get_angle(), target, current_angle);
                 telemetry.update();
             }
 
