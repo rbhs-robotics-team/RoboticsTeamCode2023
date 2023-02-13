@@ -279,12 +279,6 @@ public class BaseController {
         return (angle > 180) ? angle - 360 : angle;
     }
 
-    private static double angular_distance(double a, double b){
-        double counter = (a > b) ? a - b : b - a;
-        double clock = 360 - counter;
-        return Math.min(counter, clock);
-    }
-
     private double get_angle(){
         return normalize_angle(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
     }
@@ -315,9 +309,6 @@ public class BaseController {
             throw new SyncError("Turning multiplier must be less than one");
         }
 
-        telemetry.addData("Path","Starting turn");
-        telemetry.update();
-
         // sync up with rest of base - acquire control over base motors
         sync();
 
@@ -334,18 +325,12 @@ public class BaseController {
         if(current_angle == target){ return; } // early exit
 
         // decide to go clockwise or counter-clocksise
-        boolean clockwise = angular_distance(current_angle, target) > (current_angle - target);
-
-        telemetry.addData("Path","Clockwise{%s}", clockwise ? "T" : "F");
-        telemetry.update();
-
+        boolean clockwise = normalize_angle(target - current_angle) > 0;
+        
         set_left_wheel_power(power * (clockwise ? 1 : -1));
         set_right_wheel_power(power * (clockwise ? -1 : 1));
 
         for(int i = 0; op_mode_is_active() && i < stages; ++i){
-            telemetry.addData("Path", "Starting stage");
-            telemetry.update();
-
             while(op_mode_is_active() && (clockwise ? (get_angle() > target) : (get_angle() < target))){
                 telemetry.addData("Path", "Clockwise{%s} Power{%f} Angle{%f} Target{%f}", clockwise ? "T" : "F", power, get_angle(), target);
                 telemetry.update();
@@ -358,13 +343,10 @@ public class BaseController {
             set_left_wheel_power(power * (clockwise ? 1 : -1));
             set_right_wheel_power(power * (clockwise ? -1 : 1));
 
-            if(wait){ pause(1); }
+            if(wait){ pause(0.05); }
         }
         
         set_wheel_power(0.0);
-
-        telemetry.addData("Path", "End of turn");
-        telemetry.update();
     }
 
     public void turn(double quarters, double power, int stages, boolean wait){ turn(quarters, power, stages, wait, 0.5); }
