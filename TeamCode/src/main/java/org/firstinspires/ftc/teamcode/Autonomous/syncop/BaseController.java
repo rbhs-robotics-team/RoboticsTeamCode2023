@@ -334,7 +334,7 @@ public class BaseController {
             while(op_mode_is_active() && (clockwise ? current_angle < 0 : current_angle > 0)){
                 current_angle = normalize_angle(get_angle() - target);
                 
-                telemetry.addData("Path", "Clockwise{%s} Power{%f} Angle{%f} Target{%f} Adjusted{%f}", clockwise ? "T" : "F", power, get_angle(), target, current_angle);
+                telemetry.addData("Path", "Clockwise{%s} Power{%2.5f} Angle{%2.5f} Target{%2.5f} Adjusted{%2.5f}", clockwise ? "T" : "F", power, get_angle(), target, current_angle);
                 telemetry.update();
             }
 
