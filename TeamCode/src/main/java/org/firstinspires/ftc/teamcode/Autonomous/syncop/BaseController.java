@@ -282,7 +282,7 @@ public class BaseController {
     private double get_angle(){
         return normalize_angle(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
     }
-
+    
     // blocking pause
     private void pause(double seconds){
         runtime.reset();
